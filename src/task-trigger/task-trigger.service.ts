@@ -35,7 +35,7 @@ export class TaskTriggerService {
     const jobQueue = await this.parameterService.get<string>('github-security-scan-job-queue')
     const jobDefinition = await this.parameterService.get<string>('github-security-scan-job-definition')
     const anthropicApiKey = await this.parameterService.get<string>('anthropic-api-key')
-    const scanId = `tvo-task-${uuidv4()}`
+    const scanId = `tvo-scan-${uuidv4()}`
     await this.taskRepository.putItem({
       scanId,
       status: TaskStatus.PENDING,
