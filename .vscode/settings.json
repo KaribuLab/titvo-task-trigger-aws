@@ -1,0 +1,19 @@
+{
+    "standard.autoFixOnSave": true,
+    "standard.enable": true,
+    "standard.engine": "ts-standard",
+    "standard.run": "onType",
+    "typescript.format.enable": false,
+    "javascript.format.enable": false,
+    "standard.validate": [
+        "typescript"
+    ],
+    "emeraldwalk.runonsave": {
+        "commands": [
+            {
+                "match": "\\.hcl$",
+                "cmd": "terragrunt hclfmt --terragrunt-hclfmt-file ${file}"
+            }
+        ]
+    }
+}
