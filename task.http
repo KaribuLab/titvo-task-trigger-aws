@@ -1,0 +1,18 @@
+# Run task
+
+@apiKey = {{$dotenv API_KEY}}
+@githubToken = {{$dotenv GITHUB_TOKEN}}
+@githubRepoName = {{$dotenv GITHUB_REPO_NAME}}
+@githubCommitSha = {{$dotenv GITHUB_COMMIT_SHA}}
+@githubAssignee = {{$dotenv GITHUB_ASSIGNEE}}
+
+POST {{apiUrl}}/run-scan
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+  "github_token": "{{githubToken}}",
+  "github_repo_name": "{{githubRepoName}}",
+  "github_commit_sha": "{{githubCommitSha}}",
+  "github_assignee": "{{githubAssignee}}"
+}
