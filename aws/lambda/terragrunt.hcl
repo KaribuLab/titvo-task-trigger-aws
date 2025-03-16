@@ -26,8 +26,10 @@ dependency parameters {
     parameters = {
       "/tvo/security-scan/test/infra/github-security-scan-batch-arn"     = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-github-security-scan-batch-test-job-definition"
       "/tvo/security-scan/test/infra/github-security-scan-job-queue-arn" = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-github-security-scan-job-queue-test"
+      "/tvo/security-scan/test/infra/dynamo-task-table-arn"              = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-github-security-scan-task-table-test"
       "/tvo/security-scan/prod/infra/github-security-scan-batch-arn"     = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-github-security-scan-batch-prod-job-definition"
       "/tvo/security-scan/prod/infra/github-security-scan-job-queue-arn" = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-github-security-scan-job-queue-prod"
+      "/tvo/security-scan/prod/infra/dynamo-task-table-arn"              = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-github-security-scan-task-table-prod"
     }
   }
 }
@@ -64,6 +66,15 @@ inputs = {
         "Resource" : [
           "${dependency.parameters.outputs.parameters["${local.base_path}/infra/github-security-scan-batch-arn"]}",
           "${dependency.parameters.outputs.parameters["${local.base_path}/infra/github-security-scan-job-queue-arn"]}"
+        ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "dynamodb:PutItem"
+        ],
+        "Resource" : [
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-task-table-arn"]}"
         ]
       }
     ]

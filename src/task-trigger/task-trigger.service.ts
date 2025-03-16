@@ -4,10 +4,12 @@ import { ParameterService } from '@shared'
 import { BatchService } from '../../shared/src/batch/batch.service'
 import { v4 as uuidv4 } from 'uuid'
 import { ApiKeyNotFoundError, NoAuthorizedApiKeyError, GithubTokenNotFoundError, GithubRepoNameNotFoundError, GithubCommitShaNotFoundError, GithubAssigneeNotFoundError } from './task-trigger.error'
+import { TaskRepository } from '../task/task.repository'
+import { TaskStatus } from '../task/task.document'
 
 @Injectable()
 export class TaskTriggerService {
-  constructor (private readonly parameterService: ParameterService, private readonly batchService: BatchService) {}
+  constructor (private readonly parameterService: ParameterService, private readonly batchService: BatchService, private readonly taskRepository: TaskRepository) {}
   async process (input: TaskTriggerInputDto): Promise<TaskTriggerOutputDto> {
     const apiKey = await this.parameterService.get<string>('api-key')
     if (apiKey === undefined) {
@@ -34,6 +36,13 @@ export class TaskTriggerService {
     const jobDefinition = await this.parameterService.get<string>('github-security-scan-job-definition')
     const anthropicApiKey = await this.parameterService.get<string>('anthropic-api-key')
     const taskId = `tvo-task-${uuidv4()}`
+    await this.taskRepository.putItem({
+      taskId,
+      status: TaskStatus.PENDING,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      ttl: Math.floor(Date.now() / 1000) + 3600
+    })
     await this.batchService.submitJob(`github-security-scan-${taskId}`, jobQueue, jobDefinition, [
       { name: 'ANTHROPIC_API_KEY', value: anthropicApiKey },
       { name: 'GITHUB_TOKEN', value: input.githubToken },
