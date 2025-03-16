@@ -42,7 +42,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
       statusCode: HttpStatus.OK,
       body: JSON.stringify({
         message: output.message,
-        task_id: output.taskId
+        scan_id: output.scanId
       })
     }
   } catch (error) {
