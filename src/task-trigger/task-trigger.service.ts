@@ -35,25 +35,25 @@ export class TaskTriggerService {
     const jobQueue = await this.parameterService.get<string>('github-security-scan-job-queue')
     const jobDefinition = await this.parameterService.get<string>('github-security-scan-job-definition')
     const anthropicApiKey = await this.parameterService.get<string>('anthropic-api-key')
-    const taskId = `tvo-task-${uuidv4()}`
+    const scanId = `tvo-task-${uuidv4()}`
     await this.taskRepository.putItem({
-      taskId,
+      scanId,
       status: TaskStatus.PENDING,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       ttl: Math.floor(Date.now() / 1000) + 3600
     })
-    await this.batchService.submitJob(`github-security-scan-${taskId}`, jobQueue, jobDefinition, [
+    await this.batchService.submitJob(`github-security-scan-${scanId}`, jobQueue, jobDefinition, [
       { name: 'ANTHROPIC_API_KEY', value: anthropicApiKey },
       { name: 'GITHUB_TOKEN', value: input.githubToken },
       { name: 'GITHUB_REPO_NAME', value: input.githubRepoName },
       { name: 'GITHUB_COMMIT_SHA', value: input.githubCommitSha },
       { name: 'GITHUB_ASSIGNEE', value: input.githubAssignee },
-      { name: 'TITVO_SCAN_TASK_ID', value: taskId }
+      { name: 'TITVO_SCAN_TASK_ID', value: scanId }
     ])
     return {
-      message: 'Task started',
-      taskId
+      message: 'Scan starting',
+      scanId
     }
   }
 }

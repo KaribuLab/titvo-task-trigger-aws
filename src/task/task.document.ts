@@ -6,7 +6,7 @@ export enum TaskStatus {
 }
 
 export interface TaskDocument {
-  taskId: string
+  scanId: string
   status: TaskStatus
   createdAt: string
   updatedAt: string

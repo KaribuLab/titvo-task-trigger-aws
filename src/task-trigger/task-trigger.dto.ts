@@ -8,7 +8,7 @@ class TaskTriggerInput {
 
 class TaskTriggerOutput {
   message: string
-  taskId: string
+  scanId: string
 }
 
 export { TaskTriggerInput as TaskTriggerInputDto, TaskTriggerOutput as TaskTriggerOutputDto }

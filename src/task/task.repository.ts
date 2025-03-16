@@ -14,7 +14,7 @@ export class TaskRepository {
     await this.dynamoDBClient.send(new PutItemCommand({
       TableName: this.tableName,
       Item: {
-        task_id: { S: document.taskId },
+        scan_id: { S: document.scanId },
         status: { S: document.status },
         created_at: { S: document.createdAt },
         updated_at: { S: document.updatedAt },
