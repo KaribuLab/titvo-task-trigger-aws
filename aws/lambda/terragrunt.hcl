@@ -24,7 +24,10 @@ dependency parameters {
   config_path = "${get_parent_terragrunt_dir()}/aws/parameter"
   mock_outputs = {
     parameters = {
-      "key" = "value"
+      "/tvo/security-scan/test/infra/github-security-scan-batch-arn"     = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-github-security-scan-batch-test-job-definition"
+      "/tvo/security-scan/test/infra/github-security-scan-job-queue-arn" = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-github-security-scan-job-queue-test"
+      "/tvo/security-scan/prod/infra/github-security-scan-batch-arn"     = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-github-security-scan-batch-prod-job-definition"
+      "/tvo/security-scan/prod/infra/github-security-scan-job-queue-arn" = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-github-security-scan-job-queue-prod"
     }
   }
 }
@@ -51,6 +54,16 @@ inputs = {
         "Resource" : [
           "arn:aws:ssm:*:*:parameter${local.base_path}/common",
           "arn:aws:ssm:*:*:parameter${local.base_path}/task-trigger"
+        ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "batch:SubmitJob"
+        ],
+        "Resource" : [
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/github-security-scan-job-queue-arn"]}",
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/github-security-scan-job-queue-arn"]}"
         ]
       }
     ]

@@ -40,7 +40,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
     const output = await taskTriggerService.process(input)
     return {
       statusCode: HttpStatus.OK,
-      body: JSON.stringify(output)
+      body: JSON.stringify({
+        message: output.message,
+        task_id: output.taskId
+      })
     }
   } catch (error) {
     logger.error('Error processing task trigger')
