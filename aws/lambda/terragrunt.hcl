@@ -62,7 +62,7 @@ inputs = {
           "batch:SubmitJob"
         ],
         "Resource" : [
-          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/github-security-scan-job-queue-arn"]}",
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/github-security-scan-batch-arn"]}",
           "${dependency.parameters.outputs.parameters["${local.base_path}/infra/github-security-scan-job-queue-arn"]}"
         ]
       }
