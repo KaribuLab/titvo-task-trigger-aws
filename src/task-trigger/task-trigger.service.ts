@@ -3,7 +3,7 @@ import { TaskTriggerInputDto, TaskTriggerOutputDto } from './task-trigger.dto'
 import { ParameterService } from '@shared'
 import { BatchService } from '../../shared/src/batch/batch.service'
 import { v4 as uuidv4 } from 'uuid'
-import { ApiKeyNotFoundError, NoAuthorizedApiKeyError, GithubTokenNotFoundError, GithubRepoNameNotFoundError, GithubCommitShaNotFoundError, GithubAssigneeNotFoundError } from './task-trigger.error'
+import { ApiKeyNotFoundError, GithubTokenNotFoundError, GithubRepoNameNotFoundError, GithubCommitShaNotFoundError, GithubAssigneeNotFoundError } from './task-trigger.error'
 import { TaskRepository } from '../task/task.repository'
 import { TaskStatus } from '../task/task.document'
 
@@ -11,14 +11,12 @@ import { TaskStatus } from '../task/task.document'
 export class TaskTriggerService {
   constructor (private readonly parameterService: ParameterService, private readonly batchService: BatchService, private readonly taskRepository: TaskRepository) {}
   async process (input: TaskTriggerInputDto): Promise<TaskTriggerOutputDto> {
-    const apiKey = await this.parameterService.get<string>('api-key')
-    if (apiKey === undefined) {
+    if (input.apiKey === undefined) {
       throw new ApiKeyNotFoundError('API key not found')
     }
-    if (apiKey !== input.apiKey) {
-      // FIXME: Use table for authorized API keys
-      throw new NoAuthorizedApiKeyError('Invalid API key')
-    }
+    // FIXME: Use table for authorized API keys
+    // Aquí iría la validación del API key contra una tabla de claves autorizadas
+
     // FIXME: Use https://valibot.dev for validation
     if (input.githubToken === undefined) {
       throw new GithubTokenNotFoundError('Github token not found')
@@ -48,8 +46,7 @@ export class TaskTriggerService {
       { name: 'GITHUB_TOKEN', value: input.githubToken },
       { name: 'GITHUB_REPO_NAME', value: input.githubRepoName },
       { name: 'GITHUB_COMMIT_SHA', value: input.githubCommitSha },
-      { name: 'GITHUB_ASSIGNEE', value: input.githubAssignee },
-      { name: 'TITVO_SCAN_TASK_ID', value: scanId }
+      { name: 'GITHUB_ASSIGNEE', value: input.githubAssignee }
     ])
     return {
       message: 'Scan starting',

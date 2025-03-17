@@ -8,6 +8,7 @@ import { Logger } from 'nestjs-pino'
 import { ParameterService } from '@shared'
 import { TaskTriggerInputDto } from './task-trigger/task-trigger.dto'
 import { ApiKeyNotFoundError, GithubTokenNotFoundError, GithubRepoNameNotFoundError, GithubCommitShaNotFoundError, GithubAssigneeNotFoundError, NoAuthorizedApiKeyError } from './task-trigger/task-trigger.error'
+import { findHeaderCaseInsensitive } from './utils/headers'
 
 const logger = new NestLogger('GetDebtLambdaHandler')
 
@@ -26,17 +27,17 @@ app.get(ParameterService)
 const taskTriggerService = app.get(TaskTriggerService)
 
 export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEventV2, context: Context, callback: APIGatewayProxyCallbackV2): Promise<APIGatewayProxyResultV2> => {
-  const headers = event.headers
-  const body = JSON.parse(event.body as string)
-  logger.log(`Received event: [repo_name='${body.github_repo_name as string}', commit_sha='${body.github_commit_sha as string}', assignee='${body.github_assignee as string}']`)
-  const input: TaskTriggerInputDto = {
-    apiKey: headers['x-api-key'],
-    githubToken: body.github_token,
-    githubRepoName: body.github_repo_name,
-    githubCommitSha: body.github_commit_sha,
-    githubAssignee: body.github_assignee
-  }
   try {
+    const apiKey = findHeaderCaseInsensitive(event.headers, 'x-api-key')
+    const body = JSON.parse(event.body ?? '{}')
+    logger.log(`Received event: [repo_name='${body.github_repo_name as string}', commit_sha='${body.github_commit_sha as string}', assignee='${body.github_assignee as string}']`)
+    const input: TaskTriggerInputDto = {
+      apiKey,
+      githubToken: body.github_token,
+      githubRepoName: body.github_repo_name,
+      githubCommitSha: body.github_commit_sha,
+      githubAssignee: body.github_assignee
+    }
     const output = await taskTriggerService.process(input)
     return {
       statusCode: HttpStatus.OK,
