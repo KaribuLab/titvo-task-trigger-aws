@@ -43,6 +43,7 @@ export class TaskTriggerService {
     })
     await this.batchService.submitJob(`github-security-scan-${scanId}`, jobQueue, jobDefinition, [
       { name: 'ANTHROPIC_API_KEY', value: anthropicApiKey },
+      { name: 'TITVO_SCAN_TASK_ID', value: scanId },
       { name: 'GITHUB_TOKEN', value: input.githubToken },
       { name: 'GITHUB_REPO_NAME', value: input.githubRepoName },
       { name: 'GITHUB_COMMIT_SHA', value: input.githubCommitSha },
