@@ -12,6 +12,6 @@ export class AesService {
     }
     const secret = Buffer.from(secretBase64, 'base64') as CipherKey
     const cipher = createCipheriv('aes-256-ecb', secret, null)
-    return cipher.update(data, 'utf8', 'base64')
+    return cipher.update(data, 'utf8', 'base64') + cipher.final('base64')
   }
 }
