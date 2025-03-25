@@ -92,6 +92,7 @@ inputs = {
   environment_variables = {
     PARAMETER_BASE_PATH = local.serverless.locals.parameter_path
     AWS_STAGE           = local.serverless.locals.stage
+    LOG_LEVEL           = "debug"
   }
   runtime       = "nodejs20.x"
   handler       = "src/entrypoint.handler"

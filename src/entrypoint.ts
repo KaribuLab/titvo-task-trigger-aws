@@ -28,18 +28,9 @@ const taskTriggerService = app.get(TaskTriggerService)
 
 export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEventV2, context: Context, callback: APIGatewayProxyCallbackV2): Promise<APIGatewayProxyResultV2> => {
   try {
+    logger.debug(`Received event: ${JSON.stringify(event)}`)
     const apiKey = findHeaderCaseInsensitive(event.headers, 'x-api-key')
-    if (event.body === undefined) {
-      logger.warn(`Received event with no body: ${JSON.stringify(event)}`)
-      return {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        statusCode: HttpStatus.BAD_REQUEST,
-        body: JSON.stringify({ message: 'No body' })
-      }
-    }
-    const body = JSON.parse(event.body)
+    const body = JSON.parse(event.body ?? '{}')
     logger.log(`Received event: [source=${body.source as string}, args=${JSON.stringify(body.args)}]`)
     const input: TaskTriggerInputDto = {
       apiKey,

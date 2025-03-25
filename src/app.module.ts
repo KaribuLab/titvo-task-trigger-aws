@@ -2,9 +2,22 @@ import { Module } from '@nestjs/common'
 import { ParameterModule } from '@shared'
 import { TaskTriggerModule } from './task-trigger/task-trigger.module'
 import { BatchModule } from '../shared/src/batch/batch.module'
+import pino from 'pino'
+import { LoggerModule } from 'nestjs-pino'
 
 @Module({
   imports: [
+    LoggerModule.forRoot({
+      pinoHttp: {
+        level: process.env.LOG_LEVEL ?? 'info',
+        timestamp: pino.stdTimeFunctions.isoTime,
+        formatters: {
+          level (label: string): { level: string } {
+            return { level: label }
+          }
+        }
+      }
+    }),
     TaskTriggerModule,
     ParameterModule.forRoot({
       parameterServiceOptions: {

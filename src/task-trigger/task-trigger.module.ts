@@ -1,25 +1,12 @@
 import { Module } from '@nestjs/common'
 import { TaskTriggerService } from './task-trigger.service'
-import { LoggerModule } from 'nestjs-pino'
-import pino from 'pino'
 import { createTaskRepository, TaskRepository } from '../task/task.repository'
 import { ParameterService } from '@shared'
 import { ScmModule } from '../scm/scm.module'
 
 @Module({
   imports: [
-    ScmModule,
-    LoggerModule.forRoot({
-      pinoHttp: {
-        level: process.env.LOG_LEVEL ?? 'info',
-        timestamp: pino.stdTimeFunctions.isoTime,
-        formatters: {
-          level (label: string): { level: string } {
-            return { level: label }
-          }
-        }
-      }
-    })
+    ScmModule
   ],
   providers: [
     TaskTriggerService,
