@@ -33,10 +33,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
     logger.log(`Received event: [repo_name='${body.github_repo_name as string}', commit_sha='${body.github_commit_sha as string}', assignee='${body.github_assignee as string}']`)
     const input: TaskTriggerInputDto = {
       apiKey,
-      githubToken: body.github_token,
-      githubRepoName: body.github_repo_name,
-      githubCommitSha: body.github_commit_sha,
-      githubAssignee: body.github_assignee
+      source: body.source,
+      args: body.args
     }
     const output = await taskTriggerService.process(input)
     return {
