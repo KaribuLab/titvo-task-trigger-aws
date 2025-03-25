@@ -4,9 +4,11 @@ import { LoggerModule } from 'nestjs-pino'
 import pino from 'pino'
 import { createTaskRepository, TaskRepository } from '../task/task.repository'
 import { ParameterService } from '@shared'
+import { ScmModule } from '../scm/scm.module'
 
 @Module({
   imports: [
+    ScmModule,
     LoggerModule.forRoot({
       pinoHttp: {
         level: process.env.LOG_LEVEL ?? 'info',
