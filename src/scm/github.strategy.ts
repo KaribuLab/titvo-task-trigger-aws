@@ -12,7 +12,7 @@ export class GithubStrategy implements ScmStrategy {
   }
 
   async handle (taskArgs: TaskArgs): Promise<TaskArgs> {
-    const { githubAssignee, githubRepoName, githubToken, githubCommitSha } = taskArgs
+    const { github_assignee: githubAssignee, github_repo_name: githubRepoName, github_token: githubToken, github_commit_sha: githubCommitSha } = taskArgs
     if (githubToken === undefined) {
       throw new GithubTokenNotFoundError('Github token not found')
     }
