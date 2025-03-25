@@ -30,7 +30,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
   try {
     const apiKey = findHeaderCaseInsensitive(event.headers, 'x-api-key')
     const body = JSON.parse(event.body ?? '{}')
-    logger.log(`Received event: [repo_name='${body.github_repo_name as string}', commit_sha='${body.github_commit_sha as string}', assignee='${body.github_assignee as string}']`)
+    logger.log(`Received event: [source=${body.source as string}, args=${JSON.stringify(body.args)}]`)
     const input: TaskTriggerInputDto = {
       apiKey,
       source: body.source,
