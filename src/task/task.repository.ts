@@ -15,6 +15,7 @@ export class TaskRepository {
       TableName: this.tableName,
       Item: {
         scan_id: { S: document.scanId },
+        source: { S: document.source },
         status: { S: document.status },
         created_at: { S: document.createdAt },
         updated_at: { S: document.updatedAt },

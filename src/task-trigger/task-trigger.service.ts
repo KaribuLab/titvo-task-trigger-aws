@@ -16,12 +16,14 @@ export class TaskTriggerService {
     }
     // FIXME: Use table for authorized API keys
     // Aquí iría la validación del API key contra una tabla de claves autorizadas
-    const strategy = await this.scmStrategyResolver.resolve(input.source as TaskSource)
+    const source = input.source as TaskSource
+    const strategy = await this.scmStrategyResolver.resolve(source)
     const jobQueue = await this.parameterService.get<string>('github-security-scan-job-queue')
     const jobDefinition = await this.parameterService.get<string>('github-security-scan-job-definition')
     const scanId = `tvo-scan-${uuidv4()}`
     await this.taskRepository.putItem({
       scanId,
+      source,
       status: TaskStatus.PENDING,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
