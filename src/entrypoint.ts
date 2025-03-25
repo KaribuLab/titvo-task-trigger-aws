@@ -38,6 +38,9 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
     }
     const output = await taskTriggerService.process(input)
     return {
+      headers: {
+        'Content-Type': 'application/json'
+      },
       statusCode: HttpStatus.OK,
       body: JSON.stringify({
         message: output.message,
@@ -49,41 +52,62 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
     logger.error(error)
     if (error instanceof ApiKeyNotFoundError) {
       return {
+        headers: {
+          'Content-Type': 'application/json'
+        },
         statusCode: HttpStatus.UNAUTHORIZED,
         body: JSON.stringify({ message: error.message })
       }
     }
     if (error instanceof NoAuthorizedApiKeyError) {
       return {
+        headers: {
+          'Content-Type': 'application/json'
+        },
         statusCode: HttpStatus.UNAUTHORIZED,
         body: JSON.stringify({ message: error.message })
       }
     }
     if (error instanceof GithubTokenNotFoundError) {
       return {
+        headers: {
+          'Content-Type': 'application/json'
+        },
         statusCode: HttpStatus.BAD_REQUEST,
         body: JSON.stringify({ message: error.message })
       }
     }
     if (error instanceof GithubRepoNameNotFoundError) {
       return {
+        headers: {
+          'Content-Type': 'application/json'
+        },
         statusCode: HttpStatus.BAD_REQUEST,
         body: JSON.stringify({ message: error.message })
       }
     }
     if (error instanceof GithubCommitShaNotFoundError) {
       return {
+        headers: {
+          'Content-Type': 'application/json'
+        },
         statusCode: HttpStatus.BAD_REQUEST,
         body: JSON.stringify({ message: error.message })
       }
     }
     if (error instanceof GithubAssigneeNotFoundError) {
       return {
+        headers: {
+          'Content-Type': 'application/json'
+        },
         statusCode: HttpStatus.BAD_REQUEST,
         body: JSON.stringify({ message: error.message })
       }
     }
     return {
+      headers: {
+        'Content-Type': 'application/json'
+      },
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       body: JSON.stringify({ message: 'Internal server error' })
     }
