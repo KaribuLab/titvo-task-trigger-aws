@@ -1,9 +1,7 @@
 class TaskTriggerInput {
   apiKey?: string
-  githubToken: string
-  githubRepoName: string
-  githubCommitSha: string
-  githubAssignee: string
+  source: string
+  args: { [key: string]: string }
 }
 
 class TaskTriggerOutput {

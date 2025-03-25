@@ -18,7 +18,10 @@ export class TaskRepository {
         status: { S: document.status },
         created_at: { S: document.createdAt },
         updated_at: { S: document.updatedAt },
-        ttl: { N: document.ttl.toString() }
+        ttl: { N: document.ttl.toString() },
+        args: {
+          M: Object.fromEntries(Object.entries(document.args).map(([key, value]) => [key, { S: JSON.stringify(value) }]))
+        }
       }
     }))
   }
