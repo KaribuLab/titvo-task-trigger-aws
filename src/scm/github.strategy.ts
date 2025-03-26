@@ -2,7 +2,34 @@ import { Injectable } from '@nestjs/common'
 import { TaskArgs, TaskSource } from '../task/task.domain'
 import { ScmStrategy } from './scm.interface'
 import { AesService } from '../crypto/aes.service'
-import { GithubTokenNotFoundError, GithubRepoNameNotFoundError, GithubCommitShaNotFoundError, GithubAssigneeNotFoundError } from '../task-trigger/task-trigger.error'
+
+export class GithubTokenNotFoundError extends Error {
+  constructor (message: string) {
+    super(message)
+    this.name = 'GithubTokenNotFoundError'
+  }
+}
+
+export class GithubRepoNameNotFoundError extends Error {
+  constructor (message: string) {
+    super(message)
+    this.name = 'GithubRepoNameNotFoundError'
+  }
+}
+
+export class GithubCommitShaNotFoundError extends Error {
+  constructor (message: string) {
+    super(message)
+    this.name = 'GithubCommitShaNotFoundError'
+  }
+}
+
+export class GithubAssigneeNotFoundError extends Error {
+  constructor (message: string) {
+    super(message)
+    this.name = 'GithubAssigneeNotFoundError'
+  }
+}
 
 @Injectable()
 export class GithubStrategy implements ScmStrategy {

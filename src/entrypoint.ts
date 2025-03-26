@@ -7,7 +7,8 @@ import { HttpStatus, INestApplicationContext, Logger as NestLogger } from '@nest
 import { Logger } from 'nestjs-pino'
 import { ParameterService } from '@shared'
 import { TaskTriggerInputDto } from './task-trigger/task-trigger.dto'
-import { ApiKeyNotFoundError, GithubTokenNotFoundError, GithubRepoNameNotFoundError, GithubCommitShaNotFoundError, GithubAssigneeNotFoundError, NoAuthorizedApiKeyError } from './task-trigger/task-trigger.error'
+import { ApiKeyNotFoundError, NoAuthorizedApiKeyError } from './auth/auth.error'
+import { ActionError } from './common/common.error'
 import { findHeaderCaseInsensitive } from './utils/headers'
 
 const logger = new NestLogger('TaskTriggerHandler')
@@ -69,34 +70,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
         body: JSON.stringify({ message: error.message })
       }
     }
-    if (error instanceof GithubTokenNotFoundError) {
-      return {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        statusCode: HttpStatus.BAD_REQUEST,
-        body: JSON.stringify({ message: error.message })
-      }
-    }
-    if (error instanceof GithubRepoNameNotFoundError) {
-      return {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        statusCode: HttpStatus.BAD_REQUEST,
-        body: JSON.stringify({ message: error.message })
-      }
-    }
-    if (error instanceof GithubCommitShaNotFoundError) {
-      return {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        statusCode: HttpStatus.BAD_REQUEST,
-        body: JSON.stringify({ message: error.message })
-      }
-    }
-    if (error instanceof GithubAssigneeNotFoundError) {
+    if (error instanceof ActionError) {
       return {
         headers: {
           'Content-Type': 'application/json'

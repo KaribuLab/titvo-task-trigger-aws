@@ -3,10 +3,12 @@ import { TaskTriggerService } from './task-trigger.service'
 import { createTaskRepository, TaskRepository } from '../task/task.repository'
 import { ParameterService } from '@shared'
 import { ScmModule } from '../scm/scm.module'
+import { AuthModule } from '../auth/auth.module'
 
 @Module({
   imports: [
-    ScmModule
+    ScmModule,
+    AuthModule
   ],
   providers: [
     TaskTriggerService,
