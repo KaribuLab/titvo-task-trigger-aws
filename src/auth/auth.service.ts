@@ -11,13 +11,7 @@ export class AuthService {
       throw new ApiKeyNotFoundError('API key not found')
     }
 
-    const authorizedApiKeys = await this.parameterService.get<string>('authorized-api-keys')
-    if (authorizedApiKeys === undefined) {
-      throw new NoAuthorizedApiKeyError('No authorized API keys configured')
-    }
-
-    const authorizedKeys = authorizedApiKeys.split(',')
-    if (!authorizedKeys.includes(apiKey)) {
+    if (await this.parameterService.get<string>('api-key') !== apiKey) {
       throw new NoAuthorizedApiKeyError('API key is not authorized')
     }
   }
