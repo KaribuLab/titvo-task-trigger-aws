@@ -56,7 +56,10 @@ export class BitbucketStrategy implements ScmStrategy {
     }
 
     return {
-      ...taskArgs
+      bitbucket_commit_sha: bitbucketCommitSha,
+      bitbucket_workspace: bitbucketWorkspace,
+      bitbucket_repo_slug: bitbucketRepoSlug,
+      bitbucket_project_key: bitbucketProjectKey
     }
   }
 }
