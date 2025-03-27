@@ -39,9 +39,9 @@ export class BitbucketStrategy implements ScmStrategy {
   }
 
   async handle (taskArgs: TaskArgs): Promise<TaskArgs> {
-    const { bitbucket_commit_sha: bitbucketCommitSha, bitbucket_workspace: bitbucketWorkspace, bitbucket_repo_slug: bitbucketRepoSlug, bitbucket_project_key: bitbucketProjectKey } = taskArgs
+    const { bitbucket_commit: bitbucketCommit, bitbucket_workspace: bitbucketWorkspace, bitbucket_repo_slug: bitbucketRepoSlug, bitbucket_project_key: bitbucketProjectKey } = taskArgs
 
-    if (bitbucketCommitSha === undefined) {
+    if (bitbucketCommit === undefined) {
       throw new BitbucketCommitShaNotFoundError('Bitbucket commit sha not found')
     }
 
@@ -56,7 +56,7 @@ export class BitbucketStrategy implements ScmStrategy {
     }
 
     return {
-      bitbucket_commit_sha: bitbucketCommitSha,
+      bitbucket_commit: bitbucketCommit,
       bitbucket_workspace: bitbucketWorkspace,
       bitbucket_repo_slug: bitbucketRepoSlug,
       bitbucket_project_key: bitbucketProjectKey
