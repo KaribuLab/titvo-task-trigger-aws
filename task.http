@@ -1,5 +1,5 @@
-# Run task
-# @name runScan
+# Run task on Github
+# @name runScanGithub
 
 @apiKey = {{$dotenv API_KEY}}
 @githubToken = {{$dotenv GITHUB_TOKEN}}
@@ -24,14 +24,53 @@ X-API-Key: {{apiKey}}
 ###
 
 # Get Status
-# @name getStatus
+# @name getStatusGithub
 
-@scanId = {{runScan.response.body.scan_id}}
+@githubScanId = {{runScanGithub.response.body.scan_id}}
 
 POST {{apiUrl}}/scan-status
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 {
-  "scan_id": "{{scanId}}"
+  "scan_id": "{{githubScanId}}"
+}
+
+###
+
+@bitbucketRepoSlug = {{$dotenv BITBUCKET_REPO_SLUG}}
+@bitbucketWorkspace = {{$dotenv BITBUCKET_WORKSPACE}}
+@bitbucketProjectKey = {{$dotenv BITBUCKET_PROJECT_KEY}}
+@bitbucketCommit = {{$dotenv BITBUCKET_COMMIT}}
+
+# Run task on Bitbucket
+# @name runScanBitbucket
+
+POST {{apiUrl}}/run-scan
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+  "source": "bitbucket",
+  "args": {
+    "bitbucket_repo_slug": "{{bitbucketRepoSlug}}",
+    "bitbucket_workspace": "{{bitbucketWorkspace}}",
+    "bitbucket_project_key": "{{bitbucketProjectKey}}",
+    "bitbucket_commit": "{{bitbucketCommit}}"
+  }
+}
+
+###
+
+# Get Status
+# @name getStatusBitbucket
+
+@bitbucketScanId = {{runScanBitbucket.response.body.scan_id}}
+
+POST {{apiUrl}}/scan-status
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+  "scan_id": "{{bitbucketScanId}}"
 }
