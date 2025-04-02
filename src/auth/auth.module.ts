@@ -17,8 +17,7 @@ import { ApiKeyRepository, createApiKeyRepository } from '../api-key/api-key.rep
         })
       },
       inject: [ParameterService]
-    },
-    ParameterService
+    }
   ],
   exports: [AuthService]
 })
