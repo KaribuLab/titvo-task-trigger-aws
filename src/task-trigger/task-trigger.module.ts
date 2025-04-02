@@ -15,7 +15,7 @@ import { createApiKeyRepository, ApiKeyRepository } from '../api-key/api-key.rep
     {
       provide: ApiKeyRepository,
       useFactory: async (parameterService: ParameterService) => {
-        const apiKeyTable = await parameterService.get('dynamo-api-key-table-name')
+        const apiKeyTable = 'tvo-security-scan-account-apikey-prod' // FIXME: await parameterService.get('dynamo-api-key-table-name')
         return createApiKeyRepository({
           tableName: apiKeyTable as string,
           awsStage: process.env.AWS_STAGE ?? 'localstack',
