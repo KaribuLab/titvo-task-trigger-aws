@@ -84,8 +84,8 @@ inputs = {
           "dynamodb:Query"
         ],
         "Resource" : [
-          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-api-key-table-arn"]}",
-          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-task-table-arn"]}/index/*"
+          dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-api-key-table-arn"],
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-api-key-table-arn"]}/index/*"
         ]
       },
       {
