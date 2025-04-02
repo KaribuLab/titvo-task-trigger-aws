@@ -11,14 +11,11 @@ export interface ApiKeyRepositoryOptions {
 
 export class ApiKeyRepository {
   private readonly logger = new Logger(ApiKeyRepository.name)
-  private readonly tableName: string
 
   constructor (
     private readonly dynamoDBClient: DynamoDBClient,
-    tableName: string
-  ) {
-    this.tableName = tableName
-  }
+    private readonly tableName: string
+  ) {}
 
   /**
    * Finds an API Key by user ID
