@@ -5,6 +5,9 @@ import { ParameterService } from '@shared'
 import { ScmModule } from '../scm/scm.module'
 import { AuthService } from '../auth/auth.service'
 import { createApiKeyRepository, ApiKeyRepository } from '../api-key/api-key.repository'
+
+const awsStage = process.env.AWS_STAGE ?? 'localstack'
+const awsEndpoint = process.env.AWS_ENDPOINT ?? 'http://localhost:4566'
 @Module({
   imports: [
     ScmModule
@@ -14,24 +17,24 @@ import { createApiKeyRepository, ApiKeyRepository } from '../api-key/api-key.rep
     AuthService,
     {
       provide: ApiKeyRepository,
-      useFactory: async (parameterService: ParameterService) => {
-        const apiKeyTable = 'tvo-security-scan-account-apikey-prod' // FIXME: await parameterService.get('dynamo-api-key-table-name')
+      useFactory: () => {
+        const apiKeyTable = `tvo-security-scan-account-apikey-${awsStage}`
         return createApiKeyRepository({
-          tableName: apiKeyTable as string,
-          awsStage: process.env.AWS_STAGE ?? 'localstack',
-          awsEndpoint: process.env.AWS_ENDPOINT ?? 'http://localhost:4566'
+          tableName: apiKeyTable,
+          awsStage,
+          awsEndpoint
         })
       },
       inject: [ParameterService]
     },
     {
       provide: TaskRepository,
-      useFactory: async (parameterService: ParameterService) => {
-        const taskTable = await parameterService.get('dynamo-task-table-name')
+      useFactory: () => {
+        const taskTable = `tvo-security-scan-task-task-${awsStage}`
         return createTaskRepository({
-          tableName: taskTable as string,
-          awsStage: process.env.AWS_STAGE ?? 'localstack',
-          awsEndpoint: process.env.AWS_ENDPOINT ?? 'http://localhost:4566'
+          tableName: taskTable,
+          awsStage,
+          awsEndpoint
         })
       },
       inject: [ParameterService]
