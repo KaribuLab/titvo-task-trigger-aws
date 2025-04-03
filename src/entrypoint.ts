@@ -9,6 +9,7 @@ import { ParameterService } from '@shared'
 import { TaskTriggerInputDto } from './task-trigger/task-trigger.dto'
 import { ApiKeyNotFoundError, NoAuthorizedApiKeyError } from './auth/auth.error'
 import { ActionError } from './common/common.error'
+import { BatchIdNotFoundError, BatchIdRequiredError } from './scm/cli.strategy'
 import { findHeaderCaseInsensitive } from './utils/headers'
 
 const logger = new NestLogger('TaskTriggerHandler')
@@ -70,7 +71,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
         body: JSON.stringify({ message: error.message })
       }
     }
-    if (error instanceof ActionError) {
+    if (error instanceof BatchIdNotFoundError || error instanceof BatchIdRequiredError || error instanceof ActionError) {
       return {
         headers: {
           'Content-Type': 'application/json'
