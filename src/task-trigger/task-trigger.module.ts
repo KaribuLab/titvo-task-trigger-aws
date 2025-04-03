@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TaskTriggerService } from './task-trigger.service'
 import { createTaskRepository, TaskRepository } from '../task/task.repository'
-import { ParameterService } from '@shared'
 import { ScmModule } from '../scm/scm.module'
 import { AuthService } from '../auth/auth.service'
 import { createApiKeyRepository, ApiKeyRepository } from '../api-key/api-key.repository'
@@ -24,8 +23,7 @@ const awsEndpoint = process.env.AWS_ENDPOINT ?? 'http://localhost:4566'
           awsStage,
           awsEndpoint
         })
-      },
-      inject: [ParameterService]
+      }
     },
     {
       provide: TaskRepository,
@@ -36,8 +34,7 @@ const awsEndpoint = process.env.AWS_ENDPOINT ?? 'http://localhost:4566'
           awsStage,
           awsEndpoint
         })
-      },
-      inject: [ParameterService]
+      }
     }
   ]
 })
