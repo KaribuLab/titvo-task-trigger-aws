@@ -94,7 +94,7 @@ inputs = {
           "dynamodb:Query"
         ],
         "Resource" : [
-          dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-cli-files-table-arn"]
+          dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-cli-files-table-arn"],
           "${dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-cli-files-table-arn"]}/index/*"
         ]
       },
