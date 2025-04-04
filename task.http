@@ -74,3 +74,38 @@ X-API-Key: {{apiKey}}
 {
   "scan_id": "{{bitbucketScanId}}"
 }
+
+###
+
+# Run task on CLI
+# @name runScanCLI
+
+@apiKey = {{$dotenv API_KEY}}
+@batchId = {{$dotenv BATCH_ID}}
+
+POST {{apiUrl}}/run-scan
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+  "source": "cli",
+  "args": {
+    "batch_id": "{{batchId}}"
+  }
+}
+
+###
+
+# Get Status
+# @name getStatusCLI
+
+@apiKey = {{$dotenv API_KEY}}
+@cliScanId = {{runScanCLI.response.body.scan_id}}
+
+POST {{apiUrl}}/scan-status
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+  "scan_id": "{{cliScanId}}"
+}
