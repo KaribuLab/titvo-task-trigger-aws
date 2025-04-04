@@ -1,6 +1,7 @@
 class TaskTriggerInput {
   apiKey?: string
   source: string
+  repository: string
   args: { [key: string]: string }
 }
 

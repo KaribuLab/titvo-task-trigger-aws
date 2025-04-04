@@ -28,6 +28,7 @@ export class TaskTriggerService {
     await this.taskRepository.putItem({
       scanId,
       source,
+      repository: input.repository,
       status: TaskStatus.PENDING,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
