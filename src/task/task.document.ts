@@ -1,7 +1,7 @@
 export interface TaskDocument {
   scanId: string
+  repositoryId: string
   source: string
-  repository: string
   args: { [key: string]: string }
   status: string
   createdAt: string

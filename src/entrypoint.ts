@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core'
 import { Context, APIGatewayProxyHandlerV2, APIGatewayProxyCallbackV2, APIGatewayProxyResultV2, APIGatewayProxyEventV2 } from 'aws-lambda'
-import { TaskTriggerService } from './task-trigger/task-trigger.service'
+import { TaskTriggerService, RepositoryIdUndefinedException } from './task-trigger/task-trigger.service'
 import { AppModule } from './app.module'
 import { HttpStatus, INestApplicationContext, Logger as NestLogger } from '@nestjs/common'
 
@@ -9,7 +9,7 @@ import { ParameterService } from '@shared'
 import { TaskTriggerInputDto } from './task-trigger/task-trigger.dto'
 import { ApiKeyNotFoundError, NoAuthorizedApiKeyError } from './auth/auth.error'
 import { ActionError } from './common/common.error'
-import { BatchIdNotFoundError, BatchIdRequiredError } from './scm/cli.strategy'
+import { BatchIdNotFoundError, BatchIdRequiredError, RepositoryUrlRequiredError, RepositoryUrlInvalidError } from './scm/cli.strategy'
 import { findHeaderCaseInsensitive } from './utils/headers'
 
 const logger = new NestLogger('TaskTriggerHandler')
@@ -71,7 +71,14 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
         body: JSON.stringify({ message: error.message })
       }
     }
-    if (error instanceof BatchIdNotFoundError || error instanceof BatchIdRequiredError || error instanceof ActionError) {
+    if (
+      error instanceof BatchIdNotFoundError ||
+      error instanceof BatchIdRequiredError ||
+      error instanceof RepositoryUrlRequiredError ||
+      error instanceof RepositoryUrlInvalidError ||
+      error instanceof RepositoryIdUndefinedException ||
+      error instanceof ActionError
+    ) {
       return {
         headers: {
           'Content-Type': 'application/json'

@@ -56,6 +56,7 @@ export class BitbucketStrategy implements ScmStrategy {
     }
 
     return {
+      repository_id: `${bitbucketWorkspace}/${bitbucketRepoSlug}`,
       bitbucket_commit: bitbucketCommit,
       bitbucket_workspace: bitbucketWorkspace,
       bitbucket_repo_slug: bitbucketRepoSlug,

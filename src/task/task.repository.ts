@@ -16,6 +16,7 @@ export class TaskRepository {
       Item: {
         scan_id: { S: document.scanId },
         source: { S: document.source },
+        repository_id: { S: document.repositoryId },
         status: { S: document.status },
         created_at: { S: document.createdAt },
         updated_at: { S: document.updatedAt },

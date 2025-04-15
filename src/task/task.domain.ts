@@ -20,7 +20,7 @@ export interface TaskArgs {
 export interface Task {
   id?: string
   source: TaskSource
-  repository: string
+  repositoryId: string
   args: TaskArgs
   status: TaskStatus
 }

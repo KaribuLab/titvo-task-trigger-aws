@@ -18,6 +18,20 @@ export class BatchIdRequiredError extends ActionError {
   }
 }
 
+export class RepositoryUrlRequiredError extends ActionError {
+  constructor (message: string) {
+    super('repository-url-required', message)
+    this.name = 'RepositoryUrlRequiredError'
+  }
+}
+
+export class RepositoryUrlInvalidError extends ActionError {
+  constructor (message: string) {
+    super('repository-url-invalid', message)
+    this.name = 'RepositoryUrlInvalidError'
+  }
+}
+
 @Injectable()
 export class CliStrategy implements ScmStrategy {
   constructor (private readonly taskCliFilesRepository: TaskCliFilesRepository) {}
@@ -26,7 +40,7 @@ export class CliStrategy implements ScmStrategy {
   }
 
   async handle (taskArgs: TaskArgs): Promise<TaskArgs> {
-    const { batch_id: batchId } = taskArgs
+    const { batch_id: batchId, repository_url: repositoryUrl } = taskArgs
     if (batchId === undefined) {
       throw new BatchIdRequiredError('Batch ID is required')
     }
@@ -34,8 +48,21 @@ export class CliStrategy implements ScmStrategy {
     if (files.length === 0) {
       throw new BatchIdNotFoundError(`Batch ID not found ${batchId}`)
     }
+    if (repositoryUrl === undefined) {
+      throw new RepositoryUrlRequiredError('Repository URL is required')
+    }
+    let repositoryId: string | undefined
+    if (repositoryUrl.startsWith('git@')) {
+      repositoryId = repositoryUrl.replace(/^git@[^:]+:(.+)$/, '$1').replace(/\.git$/, '')
+    } else if (repositoryUrl.startsWith('http')) {
+      repositoryId = new URL(repositoryUrl).pathname.slice(1).replace(/\.git$/, '')
+    }
+    if (repositoryId === undefined) {
+      throw new RepositoryUrlInvalidError('Repository URL is invalid')
+    }
     return {
-      batch_id: batchId
+      batch_id: batchId,
+      repository_id: repositoryId
     }
   }
 }
