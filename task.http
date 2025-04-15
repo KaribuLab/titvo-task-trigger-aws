@@ -82,7 +82,7 @@ X-API-Key: {{apiKey}}
 
 @apiKey = {{$dotenv API_KEY}}
 @batchId = {{$dotenv BATCH_ID}}
-
+@repositoryUrl = {{$dotenv CLI_REPOSITORY_URL}}
 POST {{apiUrl}}/run-scan
 Content-Type: application/json
 X-API-Key: {{apiKey}}
@@ -90,7 +90,8 @@ X-API-Key: {{apiKey}}
 {
   "source": "cli",
   "args": {
-    "batch_id": "{{batchId}}"
+    "batch_id": "{{batchId}}",
+    "repository_url": "{{repositoryUrl}}"
   }
 }
 
