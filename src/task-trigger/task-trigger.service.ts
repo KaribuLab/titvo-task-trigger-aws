@@ -27,7 +27,7 @@ export class TaskTriggerService {
   ) {}
 
   async process (input: TaskTriggerInputDto): Promise<TaskTriggerOutputDto> {
-    await this.authService.validateApiKey(input.apiKey)
+    const userId = await this.authService.validateApiKey(input.apiKey)
     const source = input.source as TaskSource
     const strategy = await this.scmStrategyResolver.resolve(source)
     const args = await strategy.handle(input.args as TaskArgs)
@@ -44,10 +44,12 @@ export class TaskTriggerService {
       throw new RepositoryIdUndefinedException()
     }
 
+    delete args.repository_id
+
     await this.taskRepository.putItem({
       scanId,
       source,
-      repositoryId,
+      repositoryId: `${userId}:${repositoryId}`,
       status: TaskStatus.PENDING,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

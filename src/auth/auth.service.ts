@@ -11,7 +11,7 @@ export class AuthService {
     private readonly apiKeyRepository: ApiKeyRepository
   ) {}
 
-  async validateApiKey (apiKey: string | undefined): Promise<void> {
+  async validateApiKey (apiKey: string | undefined): Promise<string> {
     if (apiKey === undefined) {
       throw new ApiKeyNotFoundError('API key not found')
     }
@@ -27,5 +27,7 @@ export class AuthService {
     if (apiKeyRecord === null) {
       throw new NoAuthorizedApiKeyError('API key is not authorized')
     }
+
+    return apiKeyRecord.userId
   }
 }
