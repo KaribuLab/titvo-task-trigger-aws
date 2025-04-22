@@ -53,7 +53,7 @@ export class GithubStrategy implements ScmStrategy {
       throw new GithubAssigneeNotFoundError('Github assignee not found')
     }
     return {
-      repsitory_id: githubRepoName,
+      repository_slug: githubRepoName,
       github_assignee: githubAssignee,
       github_repo_name: githubRepoName,
       github_token: await this.aesService.encrypt(githubToken),

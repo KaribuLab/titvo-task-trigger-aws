@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { TaskTriggerInputDto, TaskTriggerOutputDto } from './task-trigger.dto'
 import { ParameterService } from '@shared'
 import { BatchService } from '../../shared/src/batch/batch.service'
@@ -18,6 +18,8 @@ export class RepositoryIdUndefinedException extends ActionError {
 
 @Injectable()
 export class TaskTriggerService {
+  private readonly logger = new Logger(TaskTriggerService.name)
+
   constructor (
     private readonly parameterService: ParameterService,
     private readonly batchService: BatchService,
@@ -35,21 +37,20 @@ export class TaskTriggerService {
     const jobDefinition = await this.parameterService.get<string>('github-security-scan-job-definition')
     const scanId = `tvo-scan-${uuidv4()}`
 
-    // Transformar repository_id a MD5
-    const repositoryId = args.repository_id !== undefined
-      ? createHash('md5').update(args.repository_id).digest('hex')
+    const repositorySlug = args.repository_slug
+    this.logger.debug(`Repository slug: ${repositorySlug}`)
+    const repositorySlugHash = repositorySlug !== undefined
+      ? createHash('md5').update(repositorySlug).digest('hex')
       : undefined
 
-    if (repositoryId === undefined) {
+    if (repositorySlugHash === undefined) {
       throw new RepositoryIdUndefinedException()
     }
-
-    delete args.repository_id
 
     await this.taskRepository.putItem({
       scanId,
       source,
-      repositoryId: `${userId}:${repositoryId}`,
+      repositoryId: `${userId}:${repositorySlugHash}`,
       status: TaskStatus.PENDING,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

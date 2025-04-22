@@ -51,18 +51,18 @@ export class CliStrategy implements ScmStrategy {
     if (repositoryUrl === undefined) {
       throw new RepositoryUrlRequiredError('Repository URL is required')
     }
-    let repositoryId: string | undefined
+    let repositorySlug: string | undefined
     if (repositoryUrl.startsWith('git@')) {
-      repositoryId = repositoryUrl.replace(/^git@[^:]+:(.+)$/, '$1').replace(/\.git$/, '')
+      repositorySlug = repositoryUrl.replace(/^git@[^:]+:(.+)$/, '$1').replace(/\.git$/, '')
     } else if (repositoryUrl.startsWith('http')) {
-      repositoryId = new URL(repositoryUrl).pathname.slice(1).replace(/\.git$/, '')
+      repositorySlug = new URL(repositoryUrl).pathname.slice(1).replace(/\.git$/, '')
     }
-    if (repositoryId === undefined) {
+    if (repositorySlug === undefined) {
       throw new RepositoryUrlInvalidError('Repository URL is invalid')
     }
     return {
       batch_id: batchId,
-      repository_id: repositoryId
+      repository_slug: repositorySlug
     }
   }
 }
