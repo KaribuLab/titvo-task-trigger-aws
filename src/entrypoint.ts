@@ -4,7 +4,7 @@ import { AppModule } from './app.module'
 import { HttpStatus, INestApplicationContext, Logger as NestLogger } from '@nestjs/common'
 import { Logger } from 'nestjs-pino'
 import { ApiKeyNotFoundError, NoAuthorizedApiKeyError } from '@titvo/auth'
-import { BatchIdNotFoundError, BatchIdRequiredError, RepositoryUrlRequiredError, RepositoryUrlInvalidError, RepositoryIdUndefinedException, TaskTriggerInputDto, TriggerTaskUseCase } from '@titvo/trigger'
+import { BatchIdNotFoundError, BatchIdRequiredError, RepositoryUrlRequiredError, RepositoryUrlInvalidError, RepositoryIdUndefinedException, TriggerTaskInputDto, TriggerTaskUseCase } from '@titvo/trigger'
 import { findHeaderCaseInsensitive } from './utils/headers'
 import { AppError } from '@titvo/shared'
 const logger = new NestLogger('TaskTriggerHandler')
@@ -28,7 +28,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
     const apiKey = findHeaderCaseInsensitive(event.headers, 'x-api-key')
     const body = JSON.parse(event.body ?? '{}')
     logger.log(`Received event: [source=${body.source as string}, args=${JSON.stringify(body.args)}]`)
-    const input: TaskTriggerInputDto = {
+    const input: TriggerTaskInputDto = {
       apiKey,
       source: body.source,
       args: body.args
