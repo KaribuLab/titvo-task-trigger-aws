@@ -7,7 +7,7 @@ export interface TaskCliFilesRepositoryOptions {
   awsEndpoint: string
 }
 
-export class DynamoTaskCliFilesRepository extends CliFilesRepository {
+export class DynamoCliFilesRepository extends CliFilesRepository {
   private readonly tableName: string
   private readonly dynamoDBClient: DynamoDBClient
 
@@ -38,10 +38,10 @@ export class DynamoTaskCliFilesRepository extends CliFilesRepository {
     })) ?? []
   }
 }
-export function createDynamoTaskCliFilesRepository (options: TaskCliFilesRepositoryOptions): DynamoTaskCliFilesRepository {
+export function createDynamoCliFilesRepository (options: TaskCliFilesRepositoryOptions): CliFilesRepository {
   const dynamoDBClient = options.awsStage === 'localstack'
     ? new DynamoDBClient({ endpoint: options.awsEndpoint })
     : new DynamoDBClient()
 
-  return new DynamoTaskCliFilesRepository(dynamoDBClient, options.tableName)
+  return new DynamoCliFilesRepository(dynamoDBClient, options.tableName)
 }

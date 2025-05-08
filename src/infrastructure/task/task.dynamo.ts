@@ -35,7 +35,7 @@ export class DynamoTaskRepository extends TaskRepository {
   }
 }
 
-export function createTaskRepository (options: TaskRepositoryOptions): DynamoTaskRepository {
+export function createTaskRepository (options: TaskRepositoryOptions): TaskRepository {
   const dynamoDBClient = options.awsStage === 'localstack' ? new DynamoDBClient({ endpoint: options.awsEndpoint }) : new DynamoDBClient()
   return new DynamoTaskRepository(dynamoDBClient, options.tableName)
 }
