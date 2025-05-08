@@ -3,9 +3,11 @@ import { createTaskRepository, DynamoTaskRepository } from '@infrastructure/task
 import { TaskRepository } from '@titvo/trigger'
 import { ValidateApiKeyUseCase } from '@titvo/auth'
 import { ApiKeyModule } from '@infrastructure/api-key/api-key.module'
+import { TriggerTaskUseCase } from '@titvo/trigger'
 @Module({
   providers: [
     ValidateApiKeyUseCase,
+    TriggerTaskUseCase,
     {
       provide: TaskRepository,
       useClass: DynamoTaskRepository,
