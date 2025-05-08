@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common'
 import pino from 'pino'
 import { LoggerModule } from 'nestjs-pino'
 import { BatchModule, ConfigModule, SecretModule } from '@titvo/aws'
-
+import { TaskModule } from './infrastructure/task/task.module'
 @Module({
   imports: [
+    TaskModule,
     LoggerModule.forRoot({
       pinoHttp: {
         level: process.env.LOG_LEVEL ?? 'info',
