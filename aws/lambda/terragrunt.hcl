@@ -27,10 +27,16 @@ dependency parameters {
       "/tvo/security-scan/test/infra/github-security-scan-batch-arn"     = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-github-security-scan-batch-test-job-definition"
       "/tvo/security-scan/test/infra/github-security-scan-job-queue-arn" = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-github-security-scan-job-queue-test"
       "/tvo/security-scan/test/infra/dynamo-task-table-arn"              = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-github-security-scan-task-table-test"
+      "/tvo/security-scan/test/infra/dynamo-configuration-table-arn"     = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-github-security-scan-configuration-table-test"
+      "/tvo/security-scan/test/infra/encryption-key-name"                = "tvo-github-security-scan-encryption-key-test"
+      "/tvo/security-scan/test/infra/dynamo-configuration-table-name"    = "tvo-github-security-scan-configuration-table-test"
       "/tvo/security-scan/prod/infra/github-security-scan-batch-arn"     = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-github-security-scan-batch-prod-job-definition"
       "/tvo/security-scan/prod/infra/github-security-scan-job-queue-arn" = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-github-security-scan-job-queue-prod"
       "/tvo/security-scan/prod/infra/dynamo-task-table-arn"              = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-github-security-scan-task-table-prod"
+      "/tvo/security-scan/prod/infra/dynamo-configuration-table-arn"     = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-github-security-scan-configuration-table-prod"
       "/tvo/security-scan/prod/infra/secret-manager-arn"                 = "arn:aws:secretsmanager:us-east-1:000000000000:secret:/tvo/security-scan/prod"
+      "/tvo/security-scan/prod/infra/encryption-key-name"                = "tvo-github-security-scan-encryption-key-prod"
+      "/tvo/security-scan/prod/infra/dynamo-configuration-table-name"    = "tvo-github-security-scan-configuration-table-prod"
     }
   }
 }
@@ -81,6 +87,15 @@ inputs = {
       {
         "Effect" : "Allow",
         "Action" : [
+          "dynamodb:GetItem",
+        ],
+        "Resource" : [
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-configuration-table-arn"]}"
+        ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
           "dynamodb:Query"
         ],
         "Resource" : [
@@ -110,9 +125,13 @@ inputs = {
     ]
   })
   environment_variables = {
-    PARAMETER_BASE_PATH = local.serverless.locals.parameter_path
-    AWS_STAGE           = local.serverless.locals.stage
-    LOG_LEVEL           = "debug"
+    API_KEY_TABLE_NAME        = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-api-key-table-name"]
+    TASK_CLI_FILES_TABLE_NAME = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-cli-files-table-name"]
+    TASK_TABLE_NAME           = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-task-table-name"]
+    CONFIG_TABLE_NAME         = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-configuration-table-name"]
+    ENCRYPTION_KEY_NAME       = dependency.parameters.outputs.parameters["${local.base_path}/infra/encryption-key-name"]
+    AWS_STAGE                 = local.serverless.locals.stage
+    LOG_LEVEL                 = "debug"
   }
   runtime       = "nodejs20.x"
   handler       = "src/entrypoint.handler"

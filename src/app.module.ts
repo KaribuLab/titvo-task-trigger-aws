@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import pino from 'pino'
 import { LoggerModule } from 'nestjs-pino'
 import { BatchModule, ConfigModule, SecretModule } from '@titvo/aws'
+
 @Module({
   imports: [
     LoggerModule.forRoot({
@@ -22,9 +23,7 @@ import { BatchModule, ConfigModule, SecretModule } from '@titvo/aws'
     }),
     SecretModule.forRoot({
       awsStage: process.env.AWS_STAGE ?? 'prod',
-      awsEndpoint: process.env.AWS_ENDPOINT ?? 'http://localhost:4566',
-      serviceName: 'trigger',
-      ttl: 3600
+      awsEndpoint: process.env.AWS_ENDPOINT ?? 'http://localhost:4566'
     }),
     BatchModule.forRoot({
       batchServiceOptions: {
