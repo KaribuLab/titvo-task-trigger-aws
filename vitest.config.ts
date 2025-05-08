@@ -9,6 +9,7 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: '@', replacement: resolve(__dirname, 'src') },
+      { find: '@infrastructure', replacement: resolve(__dirname, 'src/infrastructure') },
       { find: '@titvo/auth', replacement: resolve(__dirname, 'auth') },
       { find: '@titvo/trigger', replacement: resolve(__dirname, 'trigger') },
       { find: '@titvo/shared', replacement: resolve(__dirname, 'shared') },

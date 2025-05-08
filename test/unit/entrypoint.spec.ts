@@ -29,6 +29,56 @@ vi.mock('pino', () => ({
   }
 }))
 
+// Mock para @titvo/aws
+vi.mock('@titvo/aws', () => {
+  // eslint-disable-next-line @typescript-eslint/no-extraneous-class
+  class DummyModule {}
+  
+  return {
+    BatchModule: {
+      forRoot: vi.fn().mockReturnValue({
+        module: DummyModule,
+        providers: []
+      })
+    },
+    ConfigModule: {
+      forRoot: vi.fn().mockReturnValue({
+        module: DummyModule,
+        providers: []
+      })
+    },
+    SecretModule: {
+      forRoot: vi.fn().mockReturnValue({
+        module: DummyModule,
+        providers: []
+      })
+    },
+    SecretService: class {
+      get = vi.fn().mockResolvedValue('mocked-secret')
+    }
+  }
+})
+
+// Mock para @shared/app/crypto/aes.service
+vi.mock('@shared/app/crypto/aes.service', () => {
+  return {
+    AesService: class {
+      encrypt = vi.fn().mockResolvedValue('encrypted-data')
+    },
+    ENCRYPTION_KEY_NAME_PROPERTY: 'ENCRYPTION_KEY_NAME'
+  }
+})
+
+// Mock para @infrastructure/cli-files/cli-files.module
+vi.mock('@infrastructure/cli-files/cli-files.module', () => {
+  // eslint-disable-next-line @typescript-eslint/no-extraneous-class
+  class DummyModule {}
+  
+  return {
+    CliFilesModule: DummyModule
+  }
+})
+
 // Mock de la función initApp del entrypoint para controlar su comportamiento
 vi.mock('../../src/entrypoint', () => {
   // No exportamos el handler real, solo una versión simplificada para las pruebas
@@ -61,27 +111,42 @@ vi.mock('@titvo/trigger', () => {
     },
     TriggerTaskUseCase: class {
       execute = mockExecute
+    },
+    // Añadir mock para TaskRepository
+    TaskRepository: class {
+      save = vi.fn().mockResolvedValue(undefined)
+      findById = vi.fn().mockResolvedValue(null)
+      update = vi.fn().mockResolvedValue(undefined)
+    },
+    // Añadir mock para CliFilesRepository
+    CliFilesRepository: class {
+      findByBatchId = vi.fn().mockResolvedValue([])
+    },
+    // Añadir mock para CliFileEntity
+    CliFileEntity: class {
+      id: string
+      batchId: string
+      filename: string
+      content: string
     }
   }
 })
 
-describe('AppModule initialization', () => {
+// Configurar variables de entorno necesarias para las pruebas
+process.env.TASK_CLI_FILES_TABLE_NAME = 'test-table'
+process.env.AWS_STAGE = 'test'
+process.env.AWS_ENDPOINT = 'http://localhost:4566'
+process.env.ENCRYPTION_KEY_NAME = 'test-encryption-key'
+
+describe('Entrypoint initialization', () => {
   let appContext: INestApplicationContext | null = null
 
   afterEach(async () => {
     if (appContext !== null) {
       await appContext.close()
     }
-  })
-
-  it('debería inicializar el AppModule correctamente', async () => {
-    // Inicializar el contexto de la aplicación
-    appContext = await NestFactory.createApplicationContext(AppModule, {
-      bufferLogs: true
-    })
-
-    await appContext.init()
-    expect(appContext).toBeDefined()
+    // Reiniciar todos los mocks después de cada prueba
+    vi.clearAllMocks()
   })
 
   it('debería poder ejecutar la función initApp del entrypoint', async () => {

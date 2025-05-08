@@ -20,6 +20,6 @@ import { ScmModule } from '@infrastructure/scm/scm.module'
       })
     }],
   imports: [ApiKeyModule, CryptoModule, CliFilesModule, ScmModule],
-  exports: [TaskRepository, TriggerTaskUseCase]
+  exports: [TriggerTaskUseCase]
 })
 export class TaskModule {}
