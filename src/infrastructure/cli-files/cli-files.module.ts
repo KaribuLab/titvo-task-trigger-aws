@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common'
-import { DynamoTaskCliFilesRepository, createDynamoTaskCliFilesRepository } from '@infrastructure/cli-files/cli-files.dynamo'
+import { createDynamoTaskCliFilesRepository } from '@infrastructure/cli-files/cli-files.dynamo'
 import { CliFilesRepository } from '@titvo/trigger'
 
 @Module({
   providers: [{
     provide: CliFilesRepository,
-    useClass: DynamoTaskCliFilesRepository,
     useFactory: () => {
       return createDynamoTaskCliFilesRepository(
         {
