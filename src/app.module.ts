@@ -18,9 +18,12 @@ import { TaskModule } from './infrastructure/task/task.module'
       }
     }),
     ConfigModule.forRoot({
-      tableName: process.env.CONFIG_TABLE_NAME as string,
-      awsStage: process.env.AWS_STAGE ?? 'prod',
-      awsEndpoint: process.env.AWS_ENDPOINT ?? 'http://localhost:4566'
+      configOptions: {
+        tableName: process.env.CONFIG_TABLE_NAME as string,
+        awsStage: process.env.AWS_STAGE ?? 'prod',
+        awsEndpoint: process.env.AWS_ENDPOINT ?? 'http://localhost:4566'
+      },
+      isGlobal: true
     }),
     SecretModule.forRoot({
       awsStage: process.env.AWS_STAGE ?? 'prod',
