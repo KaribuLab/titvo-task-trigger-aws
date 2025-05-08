@@ -8,8 +8,13 @@ export interface TaskRepositoryOptions {
 }
 
 export class DynamoTaskRepository extends TaskRepository {
-  constructor (private readonly dynamoDBClient: DynamoDBClient, private readonly tableName: string) {
+  private readonly tableName: string
+  private readonly dynamoDBClient: DynamoDBClient
+
+  constructor (dynamoDBClient: DynamoDBClient, tableName: string) {
     super()
+    this.dynamoDBClient = dynamoDBClient
+    this.tableName = tableName
   }
 
   async save (document: TaskEntity): Promise<void> {

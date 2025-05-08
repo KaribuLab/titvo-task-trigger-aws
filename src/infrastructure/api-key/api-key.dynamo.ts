@@ -10,12 +10,16 @@ export interface ApiKeyRepositoryOptions {
 
 export class DynamoApiKeyRepository extends ApiKeyRepository {
   private readonly logger = new Logger(DynamoApiKeyRepository.name)
+  private readonly tableName: string
+  private readonly dynamoDBClient: DynamoDBClient
 
   constructor (
-    private readonly dynamoDBClient: DynamoDBClient,
-    private readonly tableName: string
+    dynamoDBClient: DynamoDBClient,
+    tableName: string
   ) {
     super()
+    this.dynamoDBClient = dynamoDBClient
+    this.tableName = tableName
   }
 
   /**

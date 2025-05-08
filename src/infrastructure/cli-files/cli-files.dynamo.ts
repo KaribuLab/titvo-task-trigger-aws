@@ -9,12 +9,14 @@ export interface TaskCliFilesRepositoryOptions {
 
 export class DynamoTaskCliFilesRepository extends CliFilesRepository {
   private readonly tableName: string
+  private readonly dynamoDBClient: DynamoDBClient
 
   constructor (
-    private readonly dynamoDBClient: DynamoDBClient,
+    dynamoDBClient: DynamoDBClient,
     tableName: string
   ) {
     super()
+    this.dynamoDBClient = dynamoDBClient
     this.tableName = tableName
   }
 
