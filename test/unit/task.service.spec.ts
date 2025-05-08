@@ -44,7 +44,8 @@ describe('TriggerTaskUseCase', () => {
     } as unknown as BatchService
 
     taskRepository = {
-      save: vi.fn().mockResolvedValue(undefined)
+      save: vi.fn().mockResolvedValue(undefined),
+      getById: vi.fn().mockResolvedValue(null)
     } as unknown as TaskRepository
 
     const mockStrategy = {
@@ -61,7 +62,7 @@ describe('TriggerTaskUseCase', () => {
     } as unknown as ScmStrategyResolver
 
     validateApiKeyUseCase = {
-      execute: vi.fn().mockResolvedValue('user-123')
+      execute: vi.fn().mockResolvedValue({ userId: 'user-123' })
     } as unknown as ValidateApiKeyUseCase
 
     // Crear la instancia del caso de uso
