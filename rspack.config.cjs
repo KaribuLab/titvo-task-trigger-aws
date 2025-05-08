@@ -94,7 +94,8 @@ module.exports = {
         '@aws-sdk/client-sfn',
         '@aws-sdk/client-s3',
         '@aws-sdk/client-dynamodb',
-        '@aws-sdk/client-batch'
+        '@aws-sdk/client-batch',
+        '@aws-sdk/client-secrets-manager'
       ]
       if (!lazyImports.includes(resource)) {
         return callback()

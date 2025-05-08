@@ -1,17 +1,12 @@
 import { NestFactory } from '@nestjs/core'
 import { Context, APIGatewayProxyHandlerV2, APIGatewayProxyCallbackV2, APIGatewayProxyResultV2, APIGatewayProxyEventV2 } from 'aws-lambda'
-import { TaskTriggerService, RepositoryIdUndefinedException } from './task-trigger/task-trigger.service'
 import { AppModule } from './app.module'
 import { HttpStatus, INestApplicationContext, Logger as NestLogger } from '@nestjs/common'
-
 import { Logger } from 'nestjs-pino'
-import { ParameterService } from '@shared'
-import { TaskTriggerInputDto } from './task-trigger/task-trigger.dto'
-import { ApiKeyNotFoundError, NoAuthorizedApiKeyError } from './auth/auth.error'
-import { ActionError } from './common/common.error'
-import { BatchIdNotFoundError, BatchIdRequiredError, RepositoryUrlRequiredError, RepositoryUrlInvalidError } from './scm/cli.strategy'
+import { ApiKeyNotFoundError, NoAuthorizedApiKeyError } from '@titvo/auth'
+import { BatchIdNotFoundError, BatchIdRequiredError, RepositoryUrlRequiredError, RepositoryUrlInvalidError, RepositoryIdUndefinedException, TaskTriggerInputDto, TriggerTaskUseCase } from '@titvo/trigger'
 import { findHeaderCaseInsensitive } from './utils/headers'
-
+import { AppError } from '@titvo/shared'
 const logger = new NestLogger('TaskTriggerHandler')
 
 async function initApp (): Promise<INestApplicationContext> {
@@ -25,8 +20,7 @@ async function initApp (): Promise<INestApplicationContext> {
 }
 
 const app = await initApp()
-app.get(ParameterService)
-const taskTriggerService = app.get(TaskTriggerService)
+const triggerTaskUseCase = app.get(TriggerTaskUseCase)
 
 export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEventV2, context: Context, callback: APIGatewayProxyCallbackV2): Promise<APIGatewayProxyResultV2> => {
   try {
@@ -39,7 +33,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
       source: body.source,
       args: body.args
     }
-    const output = await taskTriggerService.process(input)
+    const output = await triggerTaskUseCase.execute(input)
     return {
       headers: {
         'Content-Type': 'application/json'
@@ -77,7 +71,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
       error instanceof RepositoryUrlRequiredError ||
       error instanceof RepositoryUrlInvalidError ||
       error instanceof RepositoryIdUndefinedException ||
-      error instanceof ActionError
+      error instanceof AppError
     ) {
       return {
         headers: {

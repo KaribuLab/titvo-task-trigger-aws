@@ -3,6 +3,7 @@
     "standard.enable": true,
     "standard.engine": "ts-standard",
     "standard.run": "onType",
+    "standard.usePackageJson": true,
     "typescript.format.enable": false,
     "javascript.format.enable": false,
     "standard.validate": [

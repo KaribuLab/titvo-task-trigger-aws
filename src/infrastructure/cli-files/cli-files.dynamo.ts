@@ -1,22 +1,24 @@
 import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb'
-import { TaskCliFile } from './task-cli-files.dto'
+import { CliFileEntity, CliFilesRepository } from '@titvo/trigger'
+
 export interface TaskCliFilesRepositoryOptions {
   tableName: string
   awsStage: string
   awsEndpoint: string
 }
 
-export class TaskCliFilesRepository {
+export class DynamoTaskCliFilesRepository extends CliFilesRepository {
   private readonly tableName: string
 
   constructor (
     private readonly dynamoDBClient: DynamoDBClient,
     tableName: string
   ) {
+    super()
     this.tableName = tableName
   }
 
-  async findByBatchId (batchId: string): Promise<TaskCliFile[]> {
+  async findByBatchId (batchId: string): Promise<CliFileEntity[]> {
     const command = new QueryCommand({
       TableName: this.tableName,
       KeyConditionExpression: 'batch_id = :batch_id',
@@ -34,10 +36,10 @@ export class TaskCliFilesRepository {
     })) ?? []
   }
 }
-export function createTaskCliFilesRepository (options: TaskCliFilesRepositoryOptions): TaskCliFilesRepository {
+export function createDynamoTaskCliFilesRepository (options: TaskCliFilesRepositoryOptions): DynamoTaskCliFilesRepository {
   const dynamoDBClient = options.awsStage === 'localstack'
     ? new DynamoDBClient({ endpoint: options.awsEndpoint })
     : new DynamoDBClient()
 
-  return new TaskCliFilesRepository(dynamoDBClient, options.tableName)
+  return new DynamoTaskCliFilesRepository(dynamoDBClient, options.tableName)
 }
