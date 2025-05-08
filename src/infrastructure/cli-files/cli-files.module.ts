@@ -16,6 +16,6 @@ import { CliFilesRepository } from '@titvo/trigger'
       )
     }
   }],
-  exports: [DynamoTaskCliFilesRepository]
+  exports: [CliFilesRepository]
 })
 export class CliFilesModule {}
