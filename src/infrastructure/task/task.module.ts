@@ -18,6 +18,6 @@ import { ApiKeyModule } from '@infrastructure/api-key/api-key.module'
       })
     }],
   imports: [ApiKeyModule],
-  exports: [TaskRepository]
+  exports: [TaskRepository, TriggerTaskUseCase]
 })
 export class TaskModule {}
