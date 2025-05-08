@@ -1,5 +1,5 @@
-import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb'
-import { TaskEntity, TaskRepository } from '@titvo/trigger'
+import { DynamoDBClient, GetItemCommand, PutItemCommand } from '@aws-sdk/client-dynamodb'
+import { TaskEntity, TaskRepository, TaskSource, TaskStatus } from '@titvo/trigger'
 
 export interface TaskRepositoryOptions {
   tableName: string
@@ -32,6 +32,30 @@ export class DynamoTaskRepository extends TaskRepository {
         }
       }
     }))
+  }
+
+  async getById (scanId: string): Promise<TaskEntity | null> {
+    const result = await this.dynamoDBClient.send(new GetItemCommand({
+      TableName: this.tableName,
+      Key: { scan_id: { S: scanId } }
+    }))
+    if (result.Item === undefined) {
+      return null
+    }
+    return {
+      id: result.Item.scan_id.S,
+      source: result.Item.source.S as TaskSource,
+      repositoryId: result.Item.repository_id.S as string,
+      args: ((result.Item.args?.M) != null)
+        ? Object.fromEntries(Object.entries(result.Item.args.M).map(([key, value]) => [key, value.S as string]))
+        : {},
+      result: ((result.Item.scan_result?.M) != null)
+        ? Object.fromEntries(Object.entries(result.Item.scan_result.M).map(([key, value]) => [key, value.S as string]))
+        : {},
+      status: result.Item.status.S as TaskStatus,
+      createdAt: result.Item.created_at.S as string,
+      updatedAt: result.Item.updated_at.S as string
+    }
   }
 }
 
