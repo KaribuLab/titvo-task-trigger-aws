@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
 import { createTaskRepository, DynamoTaskRepository } from '@infrastructure/task/task.dynamo'
-import { TaskRepository } from '@titvo/trigger'
+import { TaskRepository, TriggerTaskUseCase } from '@titvo/trigger'
 import { ValidateApiKeyUseCase } from '@titvo/auth'
 import { ApiKeyModule } from '@infrastructure/api-key/api-key.module'
-import { TriggerTaskUseCase } from '@titvo/trigger'
+
 @Module({
   providers: [
     ValidateApiKeyUseCase,
