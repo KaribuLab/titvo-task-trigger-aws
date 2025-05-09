@@ -1,4 +1,4 @@
-import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb'
+import { DynamoDBClient, PutItemCommand, QueryCommand } from '@aws-sdk/client-dynamodb'
 import { CliFileEntity, CliFilesRepository } from '@titvo/trigger'
 
 export interface TaskCliFilesRepositoryOptions {
@@ -36,6 +36,27 @@ export class DynamoCliFilesRepository extends CliFilesRepository {
       fileKey: item.file_key.S as string,
       tti: parseInt(item.tti.N as string)
     })) ?? []
+  }
+
+  async create (cliFile: CliFileEntity): Promise<void> {
+    const command = new PutItemCommand({
+      TableName: this.tableName,
+      Item: {
+        file_id: {
+          S: cliFile.fileId
+        },
+        batch_id: {
+          S: cliFile.batchId
+        },
+        file_key: {
+          S: cliFile.fileKey
+        },
+        tti: {
+          N: cliFile.tti.toString()
+        }
+      }
+    })
+    await this.dynamoDBClient.send(command)
   }
 }
 export function createDynamoCliFilesRepository (options: TaskCliFilesRepositoryOptions): CliFilesRepository {
