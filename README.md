@@ -60,6 +60,33 @@ Para el desarrollo local, se utiliza LocalStack. La configuración se encuentra 
 
 ## Despliegue
 
+Modifica los valores del archivo `serverless.hcl` con los valores de tu proyecto.
+
+```hcl
+locals {
+  region = get_env("AWS_REGION")
+  stage  = get_env("AWS_STAGE")
+  stages = {
+    test = {
+      name = "Testing"
+    },
+    localstack = {
+      name = "Localstack"
+    },
+    prod = {
+      name = "Production"
+    }
+  }
+  service_name   = "my-service"
+  service_bucket = "${local.service_name}-${local.region}"
+  log_retention  = 7
+  parameter_path = "/my-service"
+  common_tags = {
+    my_tag = "my-tag-value"
+  }
+}
+```
+
 1. Clone el repositorio en la máquina local.
 
   ```shell
@@ -75,6 +102,8 @@ Para el desarrollo local, se utiliza LocalStack. La configuración se encuentra 
   export AWS_ACCESS_KEY_ID="..."
   export AWS_SECRET_ACCESS_KEY="..."
   export AWS_SESSION_TOKEN="..."
+  export AWS_REGION="..."
+  export AWS_STAGE="..."
   ```
 
   O creando un archivo `.env` en la raíz del proyecto con las variables de entorno.
@@ -83,6 +112,8 @@ Para el desarrollo local, se utiliza LocalStack. La configuración se encuentra 
   export AWS_ACCESS_KEY_ID="..."
   export AWS_SECRET_ACCESS_KEY="..."
   export AWS_SESSION_TOKEN="..."
+  export AWS_REGION="..."
+  export AWS_STAGE="..."
   ```
 
   > [!NOTE]
