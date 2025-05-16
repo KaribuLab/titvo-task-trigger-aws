@@ -24,19 +24,19 @@ dependency parameters {
   config_path = "${get_parent_terragrunt_dir()}/aws/parameter"
   mock_outputs = {
     parameters = {
-      "/tvo/security-scan/test/infra/github-security-scan-batch-arn"     = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-github-security-scan-batch-test-job-definition"
-      "/tvo/security-scan/test/infra/github-security-scan-job-queue-arn" = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-github-security-scan-job-queue-test"
-      "/tvo/security-scan/test/infra/dynamo-task-table-arn"              = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-github-security-scan-task-table-test"
-      "/tvo/security-scan/test/infra/dynamo-configuration-table-arn"     = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-github-security-scan-configuration-table-test"
-      "/tvo/security-scan/test/infra/encryption-key-name"                = "tvo-github-security-scan-encryption-key-test"
-      "/tvo/security-scan/test/infra/dynamo-configuration-table-name"    = "tvo-github-security-scan-configuration-table-test"
-      "/tvo/security-scan/prod/infra/github-security-scan-batch-arn"     = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-github-security-scan-batch-prod-job-definition"
-      "/tvo/security-scan/prod/infra/github-security-scan-job-queue-arn" = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-github-security-scan-job-queue-prod"
-      "/tvo/security-scan/prod/infra/dynamo-task-table-arn"              = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-github-security-scan-task-table-prod"
-      "/tvo/security-scan/prod/infra/dynamo-configuration-table-arn"     = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-github-security-scan-configuration-table-prod"
-      "/tvo/security-scan/prod/infra/secret-manager-arn"                 = "arn:aws:secretsmanager:us-east-1:000000000000:secret:/tvo/security-scan/prod"
-      "/tvo/security-scan/prod/infra/encryption-key-name"                = "tvo-github-security-scan-encryption-key-prod"
-      "/tvo/security-scan/prod/infra/dynamo-configuration-table-name"    = "tvo-github-security-scan-configuration-table-prod"
+      "/tvo/security-scan/test/infra/security-scan-batch-arn"         = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-security-scan-batch-test-job-definition"
+      "/tvo/security-scan/test/infra/security-scan-job-queue-arn"     = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-security-scan-job-queue-test"
+      "/tvo/security-scan/test/infra/dynamo-task-table-arn"           = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-task-table-test"
+      "/tvo/security-scan/test/infra/dynamo-configuration-table-arn"  = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-configuration-table-test"
+      "/tvo/security-scan/test/infra/encryption-key-name"             = "tvo-security-scan-encryption-key-test"
+      "/tvo/security-scan/test/infra/dynamo-configuration-table-name" = "tvo-security-scan-configuration-table-test"
+      "/tvo/security-scan/prod/infra/security-scan-batch-arn"         = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-security-scan-batch-prod-job-definition"
+      "/tvo/security-scan/prod/infra/security-scan-job-queue-arn"     = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-security-scan-job-queue-prod"
+      "/tvo/security-scan/prod/infra/dynamo-task-table-arn"           = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-task-table-prod"
+      "/tvo/security-scan/prod/infra/dynamo-configuration-table-arn"  = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-configuration-table-prod"
+      "/tvo/security-scan/prod/infra/secret-manager-arn"              = "arn:aws:secretsmanager:us-east-1:000000000000:secret:/tvo/security-scan/prod"
+      "/tvo/security-scan/prod/infra/encryption-key-name"             = "tvo-security-scan-encryption-key-prod"
+      "/tvo/security-scan/prod/infra/dynamo-configuration-table-name" = "tvo-security-scan-configuration-table-prod"
     }
   }
 }
@@ -71,8 +71,8 @@ inputs = {
           "batch:SubmitJob"
         ],
         "Resource" : [
-          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/github-security-scan-batch-arn"]}",
-          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/github-security-scan-job-queue-arn"]}"
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/security-scan-batch-arn"]}",
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/security-scan-job-queue-arn"]}"
         ]
       },
       {
