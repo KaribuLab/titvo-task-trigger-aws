@@ -24,19 +24,18 @@ dependency parameters {
   config_path = "${get_parent_terragrunt_dir()}/aws/parameter"
   mock_outputs = {
     parameters = {
-      "/tvo/security-scan/test/infra/security-scan-batch-arn"         = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-security-scan-batch-test-job-definition"
-      "/tvo/security-scan/test/infra/security-scan-job-queue-arn"     = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-security-scan-job-queue-test"
-      "/tvo/security-scan/test/infra/dynamo-task-table-arn"           = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-task-table-test"
-      "/tvo/security-scan/test/infra/dynamo-configuration-table-arn"  = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-configuration-table-test"
-      "/tvo/security-scan/test/infra/encryption-key-name"             = "tvo-security-scan-encryption-key-test"
-      "/tvo/security-scan/test/infra/dynamo-configuration-table-name" = "tvo-security-scan-configuration-table-test"
-      "/tvo/security-scan/prod/infra/security-scan-batch-arn"         = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-security-scan-batch-prod-job-definition"
-      "/tvo/security-scan/prod/infra/security-scan-job-queue-arn"     = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-security-scan-job-queue-prod"
-      "/tvo/security-scan/prod/infra/dynamo-task-table-arn"           = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-task-table-prod"
-      "/tvo/security-scan/prod/infra/dynamo-configuration-table-arn"  = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-configuration-table-prod"
-      "/tvo/security-scan/prod/infra/secret-manager-arn"              = "arn:aws:secretsmanager:us-east-1:000000000000:secret:/tvo/security-scan/prod"
-      "/tvo/security-scan/prod/infra/encryption-key-name"             = "tvo-security-scan-encryption-key-prod"
-      "/tvo/security-scan/prod/infra/dynamo-configuration-table-name" = "tvo-security-scan-configuration-table-prod"
+      "${local.base_path}/infra/security-scan-batch-arn"         = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-security-scan-batch-prod-job-definition"
+      "${local.base_path}/infra/security-scan-job-queue-arn"     = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-security-scan-job-queue-prod"
+      "${local.base_path}/infra/dynamo-task-table-arn"           = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-task-table-prod"
+      "${local.base_path}/infra/dynamo-task-table-name"          = "tvo-security-scan-task-table-prod"
+      "${local.base_path}/infra/dynamo-configuration-table-arn"  = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-configuration-table-prod"
+      "${local.base_path}/infra/dynamo-configuration-table-name" = "tvo-security-scan-configuration-table-prod"
+      "${local.base_path}/infra/dynamo-api-key-table-arn"        = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-api-key-table-prod"
+      "${local.base_path}/infra/dynamo-api-key-table-name"       = "tvo-security-scan-api-key-table-prod"
+      "${local.base_path}/infra/dynamo-cli-files-table-arn"      = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-cli-files-table-prod"
+      "${local.base_path}/infra/dynamo-cli-files-table-name"     = "tvo-security-scan-cli-files-table-prod"
+      "${local.base_path}/infra/secret-manager-arn"              = "arn:aws:secretsmanager:us-east-1:000000000000:secret:/tvo/security-scan/prod"
+      "${local.base_path}/infra/encryption-key-name"             = "tvo-security-scan-encryption-key-prod"
     }
   }
 }
