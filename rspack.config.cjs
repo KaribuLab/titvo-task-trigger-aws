@@ -15,6 +15,8 @@ const aliases = Object.entries(tsconfig.compilerOptions.paths || {}).reduce(
 module.exports = {
   context: __dirname,
   target: 'node',
+  mode: 'production',
+  devtool: 'source-map',
   entry: {
     entrypoint: ['./src/entrypoint.ts']
   },
@@ -25,7 +27,8 @@ module.exports = {
       type: 'module'
     },
     chunkFormat: 'module',
-    clean: true
+    clean: true,
+    pathinfo: true
   },
   experiments: {
     outputModule: true,
@@ -56,9 +59,15 @@ module.exports = {
                 legacyDecorator: true,
                 decoratorMetadata: true
               }
-            }
+            },
+            sourceMaps: true,
+            inlineSourcesContent: false
           }
         }
+      },
+      {
+        test: /\.node$/,
+        use: 'node-loader'
       }
     ]
   },
@@ -95,7 +104,8 @@ module.exports = {
         '@aws-sdk/client-s3',
         '@aws-sdk/client-dynamodb',
         '@aws-sdk/client-batch',
-        '@aws-sdk/client-secrets-manager'
+        '@aws-sdk/client-secrets-manager',
+        'dockerode'
       ]
       if (!lazyImports.includes(resource)) {
         return callback()

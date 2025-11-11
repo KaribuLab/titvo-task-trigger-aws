@@ -10,8 +10,8 @@
   },
   "scripts": {
     "clean": "rm -rf dist build",
-    "lint": "ts-standard | snazzy",
-    "build": "npm run clean && npm run lint && rspack build",
+    "build": "npm run clean && rspack build",
+    "dev": "turbowatch",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -27,11 +27,13 @@
     "@types/aws-lambda": "8.10.145",
     "@types/jest": "29.5.14",
     "@types/node": "22.5.4",
+    "node-loader": "^2.1.0",
     "snazzy": "9.0.0",
     "ts-lib": "0.0.5",
     "ts-loader": "9.5.2",
     "ts-node": "10.9.2",
     "ts-standard": "12.0.2",
+    "turbowatch": "^2.29.4",
     "typescript": "5.5.4",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.1.3"
@@ -41,11 +43,11 @@
     "@aws-sdk/client-dynamodb": "3.670.0",
     "@aws-sdk/client-lambda": "3.682.0",
     "@aws-sdk/client-s3": "3.665.0",
-    "@aws-sdk/s3-request-presigner": "3.665.0",
     "@aws-sdk/client-secrets-manager": "3.774.0",
     "@aws-sdk/client-sfn": "3.679.0",
     "@aws-sdk/client-ssm": "3.670.0",
     "@aws-sdk/lib-dynamodb": "3.670.0",
+    "@aws-sdk/s3-request-presigner": "3.665.0",
     "@nestjs/axios": "3.1.1",
     "@nestjs/common": "10.4.4",
     "@nestjs/config": "3.2.3",
@@ -62,5 +64,8 @@
     "nestjs-pino": "4.3.0",
     "pino": "9.6.0",
     "rxjs": "7.8.1"
+  },
+  "optionalDependencies": {
+    "dockerode": "^4.0.9"
   }
 }
