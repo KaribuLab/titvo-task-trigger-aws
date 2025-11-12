@@ -20,8 +20,8 @@ export class AppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: AppStackProps) {
     super(scope, id, props);
 
-    const apiId = cdk.Fn.importValue('MyRestApiId');
-    const rootResourceId = cdk.Fn.importValue('MyRestApiRootResourceId');
+    const apiId = cdk.Fn.importValue('ApiGatewayTaskId');
+    const rootResourceId = cdk.Fn.importValue('ApiTaskRootResourceId');
 
     const restApi = RestApi.fromRestApiAttributes(this, 'ImportedRestApi', {
       restApiId: apiId,
