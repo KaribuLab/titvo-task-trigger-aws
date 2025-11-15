@@ -1,3 +1,6 @@
+@apiUrl = {{$dotenv API_URL}}
+@repositoryUrl = {{$dotenv REPOSITORY_URL}}
+
 # Run task on Github
 # @name runScanGithub
 
@@ -17,7 +20,9 @@ X-API-Key: {{apiKey}}
     "github_token": "{{githubToken}}",
     "github_repo_name": "{{githubRepoName}}",
     "github_commit_sha": "{{githubCommitSha}}",
-    "github_assignee": "{{githubAssignee}}"
+    "github_assignee": "{{githubAssignee}}",
+    "repository_url": "{{repositoryUrl}}",
+    "commit_hash": "{{githubCommitSha}}"
   }
 }
 
@@ -56,7 +61,9 @@ X-API-Key: {{apiKey}}
     "bitbucket_repo_slug": "{{bitbucketRepoSlug}}",
     "bitbucket_workspace": "{{bitbucketWorkspace}}",
     "bitbucket_project_key": "{{bitbucketProjectKey}}",
-    "bitbucket_commit": "{{bitbucketCommit}}"
+    "bitbucket_commit": "{{bitbucketCommit}}",
+    "repository_url": "{{repositoryUrl}}",
+    "commit_hash": "{{bitbucketCommit}}"
   }
 }
 
@@ -82,7 +89,6 @@ X-API-Key: {{apiKey}}
 
 @apiKey = {{$dotenv API_KEY}}
 @batchId = {{$dotenv BATCH_ID}}
-@repositoryUrl = {{$dotenv CLI_REPOSITORY_URL}}
 POST {{apiUrl}}/run-scan
 Content-Type: application/json
 X-API-Key: {{apiKey}}

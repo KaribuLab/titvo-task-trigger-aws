@@ -11,6 +11,7 @@ export const basePath = '/tvo/security-scan/localstack/infra';
 
 export interface AppStackProps extends cdk.StackProps {
   taskTableName: string;
+  scanTableName: string;
   apiKeyTableName: string;
   taskCliFilesTableName: string;
   configTableName: string;
@@ -20,12 +21,14 @@ export class AppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: AppStackProps) {
     super(scope, id, props);
 
-    const apiId = cdk.Fn.importValue('ApiGatewayTaskId');
-    const rootResourceId = cdk.Fn.importValue('ApiTaskRootResourceId');
-
-    const restApi = RestApi.fromRestApiAttributes(this, 'ImportedRestApi', {
-      restApiId: apiId,
-      rootResourceId: rootResourceId,
+    // API Gateway
+    const restApi = new RestApi(this, 'TaskTriggerApi', {
+      restApiName: 'tvo-task-trigger-api-local',
+      description: 'API Gateway for Task Trigger',
+      deploy: true,
+      deployOptions: {
+        stageName: 'localstack',
+      },
     });
 
     // Lambda Function
@@ -42,11 +45,11 @@ export class AppStack extends cdk.Stack {
         LOG_LEVEL: 'debug',
         API_KEY_TABLE_NAME: props.apiKeyTableName,
         TASK_CLI_FILES_TABLE_NAME: props.taskCliFilesTableName,
-        TASK_TABLE_NAME: props.taskTableName,
+        TASK_TABLE_NAME: props.scanTableName,
         CONFIG_TABLE_NAME: props.configTableName,
         PARAMETERS_TABLE_NAME: props.configTableName,
         ENCRYPTION_KEY_NAME: props.encryptionKeyName,
-        AWS_ENDPOINT: process.env.AWS_ENDPOINT as string,
+        AWS_ENDPOINT: process.env.AWS_ENDPOINT_URL as string,
         NODE_OPTIONS: '--enable-source-maps',
       },
     });
@@ -70,6 +73,11 @@ export class AppStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'CloudWatchLogGroupName', {
       value: lambdaFunction.logGroup.logGroupName,
       description: 'Nombre del grupo de logs de CloudWatch'
+    });
+
+    new cdk.CfnOutput(this, 'ApiGatewayEndpoint', {
+      value: restApi.url,
+      description: 'URL del API Gateway'
     });
   }
 }

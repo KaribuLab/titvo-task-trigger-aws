@@ -81,6 +81,7 @@ async function getParameters(ssmClient: SSMClient, nextToken?: string): Promise<
     // Usar el sintetizador heredado para LocalStack (no requiere bootstrap)
     synthesizer: new cdk.LegacyStackSynthesizer(),
     taskTableName: params[`${basePath}/dynamodb/process/dynamodb_table_name`],
+    scanTableName: params[`${basePath}/dynamodb/scan/dynamodb_table_name`],
     configTableName: params[`${basePath}/dynamodb/parameter/dynamodb_table_name`],
     encryptionKeyName: '/tvo/security-scan/localstack/aes_secret',
     apiKeyTableName: params[`${basePath}/dynamodb/api-key/dynamodb_table_name`],

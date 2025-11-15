@@ -16,10 +16,5 @@
                 "cmd": "terragrunt hclfmt --terragrunt-hclfmt-file ${file}"
             }
         ]
-    },
-    "rest-client.environmentVariables": {
-        "production": {
-            "apiUrl": "https://4psk9bcsud.execute-api.us-east-1.amazonaws.com/v1"
-        }
     }
 }
