@@ -24,16 +24,16 @@ dependency parameters {
   config_path = "${get_parent_terragrunt_dir()}/aws/parameter"
   mock_outputs = {
     parameters = {
-      "${local.base_path}/infra/security-scan-batch-arn"         = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-security-scan-batch-prod-job-definition"
-      "${local.base_path}/infra/security-scan-job-queue-arn"     = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-security-scan-job-queue-prod"
-      "${local.base_path}/infra/dynamo-task-table-arn"           = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-task-table-prod"
-      "${local.base_path}/infra/dynamo-task-table-name"          = "tvo-security-scan-task-table-prod"
-      "${local.base_path}/infra/dynamo-configuration-table-arn"  = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-configuration-table-prod"
-      "${local.base_path}/infra/dynamo-configuration-table-name" = "tvo-security-scan-configuration-table-prod"
-      "${local.base_path}/infra/dynamo-api-key-table-arn"        = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-api-key-table-prod"
-      "${local.base_path}/infra/dynamo-api-key-table-name"       = "tvo-security-scan-api-key-table-prod"
-      "${local.base_path}/infra/dynamo-cli-files-table-arn"      = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-cli-files-table-prod"
-      "${local.base_path}/infra/dynamo-cli-files-table-name"     = "tvo-security-scan-cli-files-table-prod"
+      "${local.base_path}/infra/agent-arn"                       = "arn:aws:batch:us-east-1:000000000000:job-definition/tvo-security-scan-batch-prod-job-definition"
+      "${local.base_path}/infra/agent-job-queue-arn"             = "arn:aws:batch:us-east-1:000000000000:job-queue/tvo-security-scan-job-queue-prod"
+      "${local.base_path}/infra/dynamo/task-table-arn"           = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-task-table-prod"
+      "${local.base_path}/infra/dynamo/task-table-name"          = "tvo-security-scan-task-table-prod"
+      "${local.base_path}/infra/dynamo/parameter-table-arn"      = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-configuration-table-prod"
+      "${local.base_path}/infra/dynamo/parameter-table-name"     = "tvo-security-scan-configuration-table-prod"
+      "${local.base_path}/infra/dynamo/apikey-table-arn"         = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-api-key-table-prod"
+      "${local.base_path}/infra/dynamo/apikey-table-name"        = "tvo-security-scan-api-key-table-prod"
+      "${local.base_path}/infra/dynamo/cli-files-table-arn"      = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-cli-files-table-prod"
+      "${local.base_path}/infra/dynamo/cli-files-table-name"     = "tvo-security-scan-cli-files-table-prod"
       "${local.base_path}/infra/secret-manager-arn"              = "arn:aws:secretsmanager:us-east-1:000000000000:secret:/tvo/security-scan/prod"
       "${local.base_path}/infra/encryption-key-name"             = "tvo-security-scan-encryption-key-prod"
     }
@@ -70,8 +70,8 @@ inputs = {
           "batch:SubmitJob"
         ],
         "Resource" : [
-          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/security-scan-batch-arn"]}",
-          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/security-scan-job-queue-arn"]}"
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/agent-arn"]}",
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/agent-job-queue-arn"]}"
         ]
       },
       {
@@ -80,7 +80,7 @@ inputs = {
           "dynamodb:PutItem"
         ],
         "Resource" : [
-          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-task-table-arn"]}"
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/task-table-arn"]}"
         ]
       },
       {
@@ -89,7 +89,7 @@ inputs = {
           "dynamodb:GetItem",
         ],
         "Resource" : [
-          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-configuration-table-arn"]}"
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/parameter-table-arn"]}"
         ]
       },
       {
@@ -98,8 +98,8 @@ inputs = {
           "dynamodb:Query"
         ],
         "Resource" : [
-          dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-api-key-table-arn"],
-          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-api-key-table-arn"]}/index/*"
+          dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/apikey-table-arn"],
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/apikey-table-arn"]}/index/*"
         ]
       },
       {
@@ -108,8 +108,8 @@ inputs = {
           "dynamodb:Query"
         ],
         "Resource" : [
-          dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-cli-files-table-arn"],
-          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-cli-files-table-arn"]}/index/*"
+          dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/cli-files-table-arn"],
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/cli-files-table-arn"]}/index/*"
         ]
       },
       {
@@ -124,10 +124,10 @@ inputs = {
     ]
   })
   environment_variables = {
-    API_KEY_TABLE_NAME        = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-api-key-table-name"]
-    TASK_CLI_FILES_TABLE_NAME = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-cli-files-table-name"]
-    TASK_TABLE_NAME           = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-task-table-name"]
-    CONFIG_TABLE_NAME         = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo-configuration-table-name"]
+    API_KEY_TABLE_NAME        = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/apikey-table-name"]
+    TASK_CLI_FILES_TABLE_NAME = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/cli-files-table-name"]
+    TASK_TABLE_NAME           = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/task-table-name"]
+    CONFIG_TABLE_NAME         = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/parameter-table-name"]
     ENCRYPTION_KEY_NAME       = dependency.parameters.outputs.parameters["${local.base_path}/infra/encryption-key-name"]
     AWS_STAGE                 = local.serverless.locals.stage
     LOG_LEVEL                 = "debug"
