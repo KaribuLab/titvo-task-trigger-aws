@@ -34,8 +34,8 @@ dependency parameters {
       "${local.base_path}/infra/dynamo/apikey-table-name"        = "tvo-security-scan-api-key-table-prod"
       "${local.base_path}/infra/dynamo/cli-files-table-arn"      = "arn:aws:dynamodb:us-east-1:000000000000:table/tvo-security-scan-cli-files-table-prod"
       "${local.base_path}/infra/dynamo/cli-files-table-name"     = "tvo-security-scan-cli-files-table-prod"
-      "${local.base_path}/infra/secret-manager-arn"              = "arn:aws:secretsmanager:us-east-1:000000000000:secret:/tvo/security-scan/prod"
-      "${local.base_path}/infra/encryption-key-name"             = "tvo-security-scan-encryption-key-prod"
+      "${local.base_path}/infra/secret/manager/arn"              = "arn:aws:secretsmanager:us-east-1:000000000000:secret:/tvo/security-scan/prod"
+      "${local.base_path}/infra/kms/encryption-key-name"             = "tvo-security-scan-encryption-key-prod"
     }
   }
 }
@@ -118,7 +118,7 @@ inputs = {
           "secretsmanager:GetSecretValue"
         ],
         "Resource" : [
-          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/secret-manager-arn"]}"
+          "${dependency.parameters.outputs.parameters["${local.base_path}/infra/secret/manager/arn"]}"
         ]
       }
     ]
@@ -128,7 +128,7 @@ inputs = {
     TASK_CLI_FILES_TABLE_NAME = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/cli-files-table-name"]
     TASK_TABLE_NAME           = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/task-table-name"]
     CONFIG_TABLE_NAME         = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/parameter-table-name"]
-    ENCRYPTION_KEY_NAME       = dependency.parameters.outputs.parameters["${local.base_path}/infra/encryption-key-name"]
+    ENCRYPTION_KEY_NAME       = dependency.parameters.outputs.parameters["${local.base_path}/infra/kms/encryption-key-name"]
     AWS_STAGE                 = local.serverless.locals.stage
     LOG_LEVEL                 = "debug"
   }
