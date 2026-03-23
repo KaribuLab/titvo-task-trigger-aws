@@ -130,6 +130,7 @@ inputs = {
     CONFIG_TABLE_NAME         = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/parameter-table-name"]
     ENCRYPTION_KEY_NAME       = dependency.parameters.outputs.parameters["${local.base_path}/infra/kms/encryption-key-name"]
     AWS_STAGE                 = local.serverless.locals.stage
+    NODE_OPTIONS              = "--enable-source-maps"
     LOG_LEVEL                 = "debug"
   }
   runtime       = "nodejs20.x"

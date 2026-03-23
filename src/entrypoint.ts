@@ -24,10 +24,10 @@ const triggerTaskUseCase = app.get(TriggerTaskUseCase)
 
 export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEventV2, context: Context, callback: APIGatewayProxyCallbackV2): Promise<APIGatewayProxyResultV2> => {
   try {
-    logger.debug(`Received event: ${JSON.stringify(event)}`)
+    logger.verbose(`Received event: ${JSON.stringify(event)}`)
     const apiKey = findHeaderCaseInsensitive(event.headers, 'x-api-key')
     const body = JSON.parse(event.body ?? '{}')
-    logger.log(`Received event: [source=${body.source as string}, args=${JSON.stringify(body.args)}]`)
+    logger.verbose(`Received event: [source=${body.source as string}, args=${JSON.stringify(body.args)}]`)
     const input: TriggerTaskInputDto = {
       apiKey,
       source: body.source,
