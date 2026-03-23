@@ -31,7 +31,6 @@ import { TaskModule } from '@infrastructure/task/task.module'
     }),
     BatchModule.forRoot({
       batchServiceOptions: {
-        awsEndpoint: process.env.AWS_ENDPOINT ?? 'http://localhost:4566',
         awsStage: process.env.AWS_STAGE ?? 'prod'
       },
       isGlobal: true
