@@ -28,7 +28,8 @@ export class DynamoTaskRepository extends TaskRepository {
         status: document.status,
         created_at: document.createdAt,
         updated_at: document.updatedAt,
-        args: document.args
+        args: document.args,
+        job_id: document.jobId as string
       }
     }))
   }
@@ -45,6 +46,7 @@ export class DynamoTaskRepository extends TaskRepository {
       id: result.Item.scan_id,
       source: result.Item.source as TaskSource,
       repositoryId: result.Item.repository_id as string,
+      jobId: result.Item.job_id as string,
       args: result.Item.args ? result.Item.args : {},
       result: result.Item.scan_result ? result.Item.scan_result : {},
       status: result.Item.status as TaskStatus,
@@ -56,5 +58,10 @@ export class DynamoTaskRepository extends TaskRepository {
 
 export function createTaskRepository(options: TaskRepositoryOptions): TaskRepository {
   const dynamoDBClient = options.awsStage === 'localstack' ? new DynamoDBClient({ endpoint: options.awsEndpoint }) : new DynamoDBClient()
-  return new DynamoTaskRepository(DynamoDBDocumentClient.from(dynamoDBClient), options.tableName)
+  const dynamoDBDocumentClient = DynamoDBDocumentClient.from(dynamoDBClient, {
+    marshallOptions: {
+      removeUndefinedValues: true
+    },
+  })
+  return new DynamoTaskRepository(dynamoDBDocumentClient, options.tableName)
 }
