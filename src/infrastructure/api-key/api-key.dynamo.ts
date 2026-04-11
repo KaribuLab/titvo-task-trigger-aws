@@ -1,4 +1,4 @@
-import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb'
+import { DynamoDBClient, QueryCommand, ScanCommand } from '@aws-sdk/client-dynamodb'
 import { Logger } from '@nestjs/common'
 import { withRetry } from '@titvo/aws'
 import { ApiKeyEntity, ApiKeyRepository } from '@titvo/auth'
@@ -12,14 +12,17 @@ export class DynamoApiKeyRepository extends ApiKeyRepository {
   private readonly logger = new Logger(DynamoApiKeyRepository.name)
   private readonly tableName: string
   private readonly dynamoDBClient: DynamoDBClient
+  private readonly awsStage: string
 
   constructor (
     dynamoDBClient: DynamoDBClient,
-    tableName: string
+    tableName: string,
+    awsStage: string
   ) {
     super()
     this.dynamoDBClient = dynamoDBClient
     this.tableName = tableName
+    this.awsStage = awsStage
   }
 
   /**
@@ -29,18 +32,36 @@ export class DynamoApiKeyRepository extends ApiKeyRepository {
    */
   async findByUserId (userId: string): Promise<ApiKeyEntity | null> {
     try {
-      const result = await withRetry(async () => {
-        return await this.dynamoDBClient.send(
-          new QueryCommand({
-            TableName: this.tableName,
-            IndexName: 'user_id_gsi',
-            KeyConditionExpression: 'user_id = :userId',
-            ExpressionAttributeValues: {
-              ':userId': { S: userId }
-            }
-          })
-        )
-      }, `findByUserId(${userId})`, { logger: this.logger })
+      let result
+
+      if (this.awsStage === 'localstack') {
+        // Workaround para bug de LocalStack con GSI queries
+        result = await withRetry(async () => {
+          return await this.dynamoDBClient.send(
+            new ScanCommand({
+              TableName: this.tableName,
+              FilterExpression: 'user_id = :userId',
+              ExpressionAttributeValues: {
+                ':userId': { S: userId }
+              }
+            })
+          )
+        }, `findByUserId(${userId})`, { logger: this.logger })
+      } else {
+        // Comportamiento normal para AWS
+        result = await withRetry(async () => {
+          return await this.dynamoDBClient.send(
+            new QueryCommand({
+              TableName: this.tableName,
+              IndexName: 'user_id_gsi',
+              KeyConditionExpression: 'user_id = :userId',
+              ExpressionAttributeValues: {
+                ':userId': { S: userId }
+              }
+            })
+          )
+        }, `findByUserId(${userId})`, { logger: this.logger })
+      }
 
       if ((result.Items == null) || result.Items.length === 0) {
         return null
@@ -65,18 +86,36 @@ export class DynamoApiKeyRepository extends ApiKeyRepository {
    */
   async findByApiKey (apiKey: string): Promise<ApiKeyEntity | null> {
     try {
-      const result = await withRetry(async () => {
-        return await this.dynamoDBClient.send(
-          new QueryCommand({
-            TableName: this.tableName,
-            IndexName: 'api_key_gsi',
-            KeyConditionExpression: 'api_key = :apiKey',
-            ExpressionAttributeValues: {
-              ':apiKey': { S: apiKey }
-            }
-          })
-        )
-      }, `findByApiKey(${apiKey})`, { logger: this.logger })
+      let result
+
+      if (this.awsStage === 'localstack') {
+        // Workaround para bug de LocalStack con GSI queries
+        result = await withRetry(async () => {
+          return await this.dynamoDBClient.send(
+            new ScanCommand({
+              TableName: this.tableName,
+              FilterExpression: 'api_key = :apiKey',
+              ExpressionAttributeValues: {
+                ':apiKey': { S: apiKey }
+              }
+            })
+          )
+        }, `findByApiKey(${apiKey})`, { logger: this.logger })
+      } else {
+        // Comportamiento normal para AWS
+        result = await withRetry(async () => {
+          return await this.dynamoDBClient.send(
+            new QueryCommand({
+              TableName: this.tableName,
+              IndexName: 'api_key_gsi',
+              KeyConditionExpression: 'api_key = :apiKey',
+              ExpressionAttributeValues: {
+                ':apiKey': { S: apiKey }
+              }
+            })
+          )
+        }, `findByApiKey(${apiKey})`, { logger: this.logger })
+      }
 
       if ((result.Items == null) || result.Items.length === 0) {
         return null
@@ -100,5 +139,5 @@ export function createApiKeyRepository (options: ApiKeyRepositoryOptions): ApiKe
     ? new DynamoDBClient({ endpoint: options.awsEndpoint })
     : new DynamoDBClient()
 
-  return new DynamoApiKeyRepository(dynamoDBClient, options.tableName)
+  return new DynamoApiKeyRepository(dynamoDBClient, options.tableName, options.awsStage)
 }

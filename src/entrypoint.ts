@@ -4,7 +4,7 @@ import { AppModule } from './app.module'
 import { HttpStatus, INestApplicationContext, Logger as NestLogger } from '@nestjs/common'
 import { Logger } from 'nestjs-pino'
 import { ApiKeyNotFoundError, NoAuthorizedApiKeyError } from '@titvo/auth'
-import { BatchIdNotFoundError, BatchIdRequiredError, RepositoryUrlRequiredError, RepositoryUrlInvalidError, RepositoryIdUndefinedException, TriggerTaskInputDto, TriggerTaskUseCase } from '@titvo/trigger'
+import { BatchIdNotFoundError, BatchIdRequiredError, RepositoryUrlRequiredError, RepositoryUrlInvalidError, RepositoryIdUndefinedException, TriggerTaskInputDto, TriggerTaskUseCase, GithubTokenNotFoundError, GithubRepoNameNotFoundError, GithubCommitShaNotFoundError, GithubAssigneeNotFoundError } from '@titvo/trigger'
 import { findHeaderCaseInsensitive } from './utils/headers'
 import { AppError } from '@titvo/shared'
 const logger = new NestLogger('TaskTriggerHandler')
@@ -71,6 +71,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: APIGatewayProxyEv
       error instanceof RepositoryUrlRequiredError ||
       error instanceof RepositoryUrlInvalidError ||
       error instanceof RepositoryIdUndefinedException ||
+      error instanceof GithubTokenNotFoundError ||
+      error instanceof GithubRepoNameNotFoundError ||
+      error instanceof GithubCommitShaNotFoundError ||
+      error instanceof GithubAssigneeNotFoundError ||
       error instanceof AppError
     ) {
       return {

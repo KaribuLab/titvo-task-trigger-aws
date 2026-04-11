@@ -22,28 +22,36 @@ async function isAppStackCompleted(cloudFormationClient: CloudFormationClient): 
   }
 }
 
-async function getParameters(ssmClient: SSMClient, nextToken?: string): Promise<Record<string, string>> {
+async function getParameters(ssmClient: SSMClient, nextToken?: string, accumulated: Record<string, string> = {}): Promise<Record<string, string>> {
+  console.log(`Fetching parameters from path: ${basePath}${nextToken ? ' (paginated)' : ''}`);
   const commandSSM = new GetParametersByPathCommand({
     Path: basePath,
     Recursive: true,
     NextToken: nextToken,
   });
   const responseSSM = await ssmClient.send(commandSSM);
-  if (responseSSM.Parameters !== undefined && responseSSM.Parameters.length === 0) {
+  console.log(`Found ${responseSSM.Parameters?.length ?? 0} parameters`);
+  
+  // Only throw error on first call if no parameters at all
+  if (!nextToken && (responseSSM.Parameters === undefined || responseSSM.Parameters.length === 0)) {
     throw new Error('No parameters found');
   }
-  let params: Record<string, string> = {};
+  
+  let params: Record<string, string> = { ...accumulated };
   if (responseSSM.Parameters !== undefined) {
+    responseSSM.Parameters.forEach(p => console.log(`  - ${p.Name}`));
     params = responseSSM.Parameters.reduce((acc, param) => {
       if (param.Name !== undefined && param.Value !== undefined) {
         acc[param.Name as keyof Record<string, string>] = param.Value;
       }
       return acc;
-    }, {} as Record<string, string>);
+    }, params);
   }
-  if (responseSSM.NextToken !== undefined) {
-    params = { ...params, ...await getParameters(ssmClient, responseSSM.NextToken) };
+  
+  if (responseSSM.NextToken !== undefined && responseSSM.Parameters && responseSSM.Parameters.length > 0) {
+    params = await getParameters(ssmClient, responseSSM.NextToken, params);
   }
+  
   return params;
 }
 
@@ -80,12 +88,12 @@ async function getParameters(ssmClient: SSMClient, nextToken?: string): Promise<
 
     // Usar el sintetizador heredado para LocalStack (no requiere bootstrap)
     synthesizer: new cdk.LegacyStackSynthesizer(),
-    taskTableName: params[`${basePath}/dynamodb/process/dynamodb_table_name`],
-    scanTableName: params[`${basePath}/dynamodb/scan/dynamodb_table_name`],
-    configTableName: params[`${basePath}/dynamodb/parameter/dynamodb_table_name`],
-    encryptionKeyName: '/tvo/security-scan/localstack/aes_secret',
-    apiKeyTableName: params[`${basePath}/dynamodb/api-key/dynamodb_table_name`],
-    taskCliFilesTableName: params[`${basePath}/dynamodb/task-cli-files/dynamodb_table_name`],
+    taskTableName: params[`${basePath}/dynamo/task-table-name`],
+    scanTableName: params[`${basePath}/dynamo/scan-table-name`],
+    configTableName: params[`${basePath}/dynamo/parameter-table-name`],
+    encryptionKeyName: params[`${basePath}/encryption-key-name`] ?? '/tvo/security-scan/localstack/aes_secret',
+    apiKeyTableName: params[`${basePath}/dynamo/apikey-table-name`],
+    taskCliFilesTableName: params[`${basePath}/dynamo/cli-files-table-name`],
 
     /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
   });
