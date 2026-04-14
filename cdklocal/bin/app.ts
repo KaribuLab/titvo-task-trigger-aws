@@ -89,11 +89,13 @@ async function getParameters(ssmClient: SSMClient, nextToken?: string, accumulat
     // Usar el sintetizador heredado para LocalStack (no requiere bootstrap)
     synthesizer: new cdk.LegacyStackSynthesizer(),
     taskTableName: params[`${basePath}/dynamo/task-table-name`],
-    scanTableName: params[`${basePath}/dynamo/scan-table-name`],
     configTableName: params[`${basePath}/dynamo/parameter-table-name`],
     encryptionKeyName: params[`${basePath}/encryption-key-name`] ?? '/tvo/security-scan/localstack/aes_secret',
     apiKeyTableName: params[`${basePath}/dynamo/apikey-table-name`],
     taskCliFilesTableName: params[`${basePath}/dynamo/cli-files-table-name`],
+    bitbucketCodeInsightsFunctionName: params[`${basePath}/lambda/bitbucket-code-insights/function_name`],
+    githubIssueFunctionName: params[`${basePath}/lambda/github-issue/function_name`],
+    reportFunctionName: params[`${basePath}/lambda/issue-report/function_name`],
 
     /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
   });

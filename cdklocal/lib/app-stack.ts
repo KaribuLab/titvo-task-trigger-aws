@@ -2,16 +2,16 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Function, Runtime, Code } from 'aws-cdk-lib/aws-lambda';
-import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
-import { Queue } from 'aws-cdk-lib/aws-sqs';
 import * as path from 'path';
 import { LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway';
 
 export const basePath = '/tvo/security-scan/localstack/infra';
 
 export interface AppStackProps extends cdk.StackProps {
+  bitbucketCodeInsightsFunctionName: string;
+  githubIssueFunctionName: string;
+  reportFunctionName: string;
   taskTableName: string;
-  scanTableName: string;
   apiKeyTableName: string;
   taskCliFilesTableName: string;
   configTableName: string;
@@ -20,6 +20,8 @@ export interface AppStackProps extends cdk.StackProps {
 export class AppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: AppStackProps) {
     super(scope, id, props);
+
+    console.log('props', props);
 
     // API Gateway
     const restApi = new RestApi(this, 'TaskTriggerApi', {
@@ -43,11 +45,13 @@ export class AppStack extends cdk.Stack {
       environment: {
         AWS_STAGE: 'localstack',
         LOG_LEVEL: 'debug',
+        TITVO_BITBUCKET_CODE_INSIGHTS_FUNCTION_NAME: props.bitbucketCodeInsightsFunctionName,
+        TITVO_GITHUB_ISSUE_FUNCTION_NAME: props.githubIssueFunctionName,
+        TITVO_REPORT_FUNCTION_NAME: props.reportFunctionName,
         API_KEY_TABLE_NAME: props.apiKeyTableName,
         TASK_CLI_FILES_TABLE_NAME: props.taskCliFilesTableName,
-        TASK_TABLE_NAME: props.scanTableName,
+        TASK_TABLE_NAME: props.taskTableName,
         CONFIG_TABLE_NAME: props.configTableName,
-        PARAMETERS_TABLE_NAME: props.configTableName,
         ENCRYPTION_KEY_NAME: props.encryptionKeyName,
         AWS_ENDPOINT: process.env.AWS_ENDPOINT_URL as string,
         NODE_OPTIONS: '--enable-source-maps',
