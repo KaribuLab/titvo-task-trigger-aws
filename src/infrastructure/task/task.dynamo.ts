@@ -29,7 +29,8 @@ export class DynamoTaskRepository extends TaskRepository {
         created_at: document.createdAt,
         updated_at: document.updatedAt,
         args: document.args,
-        job_id: document.jobId as string
+        job_id: document.jobId as string,
+        branch: document.branch
       }
     }))
   }
@@ -50,6 +51,7 @@ export class DynamoTaskRepository extends TaskRepository {
       args: result.Item.args ? result.Item.args : {},
       result: result.Item.scan_result ? result.Item.scan_result : {},
       status: result.Item.status as TaskStatus,
+      branch: result.Item.branch as string | undefined,
       createdAt: result.Item.created_at as string,
       updatedAt: result.Item.updated_at as string
     }

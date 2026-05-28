@@ -96,6 +96,8 @@ async function getParameters(ssmClient: SSMClient, nextToken?: string, accumulat
     bitbucketCodeInsightsFunctionName: params[`${basePath}/lambda/bitbucket-code-insights/function_name`],
     githubIssueFunctionName: params[`${basePath}/lambda/github-issue/function_name`],
     reportFunctionName: params[`${basePath}/lambda/issue-report/function_name`],
+    ragIndexerBucket: params[`${basePath}/s3/rag-code/bucket_name`],
+    batchRunnerUrl: process.env.BATCH_RUNNER_URL ?? 'http://rag-indexer:3002',
 
     /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
   });

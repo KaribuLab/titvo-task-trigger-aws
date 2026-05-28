@@ -16,6 +16,8 @@ export interface AppStackProps extends cdk.StackProps {
   taskCliFilesTableName: string;
   configTableName: string;
   encryptionKeyName: string;
+  ragIndexerBucket: string;
+  batchRunnerUrl: string;
 }
 export class AppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: AppStackProps) {
@@ -54,6 +56,8 @@ export class AppStack extends cdk.Stack {
         CONFIG_TABLE_NAME: props.configTableName,
         ENCRYPTION_KEY_NAME: props.encryptionKeyName,
         AWS_ENDPOINT: process.env.AWS_ENDPOINT_URL as string,
+        TITVO_RAG_INDEXER_BUCKET: props.ragIndexerBucket,
+        TITVO_BATCH_RUNNER_URL: props.batchRunnerUrl,
         NODE_OPTIONS: '--enable-source-maps',
       },
     });

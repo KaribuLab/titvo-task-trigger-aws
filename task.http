@@ -9,6 +9,7 @@
 @githubRepoName = {{$dotenv GITHUB_REPO_NAME}}
 @githubCommitSha = {{$dotenv GITHUB_COMMIT_SHA}}
 @githubAssignee = {{$dotenv GITHUB_ASSIGNEE}}
+@githubBranch = {{$dotenv GITHUB_BRANCH}}
 
 POST {{apiUrl}}/run-scan
 Content-Type: application/json
@@ -21,6 +22,7 @@ X-API-Key: {{apiKey}}
     "github_repo_name": "{{githubRepoName}}",
     "github_commit_sha": "{{githubCommitSha}}",
     "github_assignee": "{{githubAssignee}}",
+    "github_branch": "{{githubBranch}}",
     "repository_url": "{{repositoryUrl}}",
     "commit_hash": "{{githubCommitSha}}"
   }
@@ -47,6 +49,7 @@ X-API-Key: {{apiKey}}
 @bitbucketWorkspace = {{$dotenv BITBUCKET_WORKSPACE}}
 @bitbucketProjectKey = {{$dotenv BITBUCKET_PROJECT_KEY}}
 @bitbucketCommit = {{$dotenv BITBUCKET_COMMIT}}
+@bitbucketBranch = {{$dotenv BITBUCKET_BRANCH}}
 
 # Run task on Bitbucket
 # @name runScanBitbucket
@@ -62,6 +65,7 @@ X-API-Key: {{apiKey}}
     "bitbucket_workspace": "{{bitbucketWorkspace}}",
     "bitbucket_project_key": "{{bitbucketProjectKey}}",
     "bitbucket_commit": "{{bitbucketCommit}}",
+    "bitbucket_branch": "{{bitbucketBranch}}",
     "repository_url": "{{repositoryUrl}}",
     "commit_hash": "{{bitbucketCommit}}"
   }
@@ -89,6 +93,7 @@ X-API-Key: {{apiKey}}
 
 @apiKey = {{$dotenv API_KEY}}
 @batchId = {{$dotenv BATCH_ID}}
+@branch = {{$dotenv BRANCH}}
 POST {{apiUrl}}/run-scan
 Content-Type: application/json
 X-API-Key: {{apiKey}}
@@ -97,7 +102,8 @@ X-API-Key: {{apiKey}}
   "source": "cli",
   "args": {
     "batch_id": "{{batchId}}",
-    "repository_url": "{{repositoryUrl}}"
+    "repository_url": "{{repositoryUrl}}",
+    "branch": "{{branch}}"
   }
 }
 
