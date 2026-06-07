@@ -1,7 +1,7 @@
 @apiUrl = {{$dotenv API_URL}}
 @repositoryUrl = {{$dotenv REPOSITORY_URL}}
 
-# Run task on Github
+# Run task on Github (default commit scan; scan_mode omitted)
 # @name runScanGithub
 
 @apiKey = {{$dotenv API_KEY}}
@@ -30,6 +30,29 @@ X-API-Key: {{apiKey}}
 
 ###
 
+# Run full scan on Github
+# @name runFullScanGithub
+
+POST {{apiUrl}}/run-scan
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+  "source": "github",
+  "args": {
+    "github_token": "{{githubToken}}",
+    "github_repo_name": "{{githubRepoName}}",
+    "github_commit_sha": "{{githubCommitSha}}",
+    "github_assignee": "{{githubAssignee}}",
+    "github_branch": "{{githubBranch}}",
+    "repository_url": "{{repositoryUrl}}",
+    "commit_hash": "{{githubCommitSha}}",
+    "scan_mode": "full"
+  }
+}
+
+###
+
 # Get Status
 # @name getStatusGithub
 
@@ -51,7 +74,7 @@ X-API-Key: {{apiKey}}
 @bitbucketCommit = {{$dotenv BITBUCKET_COMMIT}}
 @bitbucketBranch = {{$dotenv BITBUCKET_BRANCH}}
 
-# Run task on Bitbucket
+# Run task on Bitbucket (default commit scan; scan_mode omitted)
 # @name runScanBitbucket
 
 POST {{apiUrl}}/run-scan
@@ -88,7 +111,7 @@ X-API-Key: {{apiKey}}
 
 ###
 
-# Run task on CLI
+# Run task on CLI (default commit scan; scan_mode omitted)
 # @name runScanCLI
 
 @apiKey = {{$dotenv API_KEY}}

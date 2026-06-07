@@ -40,7 +40,7 @@ describe('TriggerTaskUseCase', () => {
     } as unknown as ConfigService
 
     batchService = {
-      submitJob: vi.fn().mockResolvedValue(undefined)
+      submitJob: vi.fn().mockResolvedValue({ jobId: 'job-123' })
     } as unknown as BatchService
 
     taskRepository = {
@@ -84,7 +84,8 @@ describe('TriggerTaskUseCase', () => {
         bitbucket_commit: 'abc123',
         bitbucket_workspace: 'workspace',
         bitbucket_repo_slug: 'repo',
-        bitbucket_project_key: 'project'
+        bitbucket_project_key: 'project',
+        repository_url: 'https://bitbucket.org/workspace/repo.git'
       }
     }
 
@@ -102,13 +103,15 @@ describe('TriggerTaskUseCase', () => {
       id: 'tvo-scan-mocked-uuid',
       source: 'bitbucket',
       repositoryId: 'user-123:mocked-hash',
-      status: TaskStatus.PENDING,
+      status: TaskStatus.IN_PROGRESS,
       args: expect.objectContaining({
         bitbucket_commit: 'abc123',
         bitbucket_workspace: 'workspace',
         bitbucket_repo_slug: 'repo',
         bitbucket_project_key: 'project',
-        repository_slug: 'repository-slug'
+        repository_slug: 'repository-slug',
+        repository_url: 'https://bitbucket.org/workspace/repo.git',
+        scan_mode: 'commit'
       })
     }))
 
@@ -142,11 +145,47 @@ describe('TriggerTaskUseCase', () => {
       apiKey: 'test-api-key',
       source: 'bitbucket',
       args: {
-        bitbucket_commit: 'abc123'
+        bitbucket_commit: 'abc123',
+        repository_url: 'https://bitbucket.org/workspace/repo.git'
       }
     }
 
     // Verificar que se lanza la excepción esperada
     await expect(triggerTaskUseCase.execute(input)).rejects.toThrow(RepositoryIdUndefinedException)
+  })
+
+  it('debería persistir scan_mode full cuando se solicita', async () => {
+    const input = {
+      apiKey: 'test-api-key',
+      source: 'github',
+      args: {
+        github_commit_sha: 'abc123',
+        repository_url: 'https://github.com/user/repo.git',
+        scan_mode: 'full'
+      }
+    }
+
+    await triggerTaskUseCase.execute(input)
+
+    expect(taskRepository.save).toHaveBeenCalledWith(expect.objectContaining({
+      args: expect.objectContaining({
+        scan_mode: 'full'
+      })
+    }))
+  })
+
+  it('debería rechazar scan_mode inválido', async () => {
+    const input = {
+      apiKey: 'test-api-key',
+      source: 'github',
+      args: {
+        github_commit_sha: 'abc123',
+        repository_url: 'https://github.com/user/repo.git',
+        scan_mode: 'invalid'
+      }
+    }
+
+    await expect(triggerTaskUseCase.execute(input)).rejects.toThrow('scan_mode must be one of: commit, full')
+    expect(scmStrategyResolver.resolve).not.toHaveBeenCalled()
   })
 })
