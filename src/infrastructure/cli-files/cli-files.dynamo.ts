@@ -60,7 +60,7 @@ export class DynamoCliFilesRepository extends CliFilesRepository {
   }
 }
 export function createDynamoCliFilesRepository (options: TaskCliFilesRepositoryOptions): CliFilesRepository {
-  const dynamoDBClient = options.awsStage === 'localstack'
+  const dynamoDBClient = options.awsStage === 'local'
     ? new DynamoDBClient({ endpoint: options.awsEndpoint })
     : new DynamoDBClient()
 

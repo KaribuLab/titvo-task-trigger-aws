@@ -7,8 +7,8 @@ locals {
     test = {
       name = "Testing"
     },
-    localstack = {
-      name = "Localstack"
+    local = {
+      name = "Local"
     },
     prod = {
       name = "Production"

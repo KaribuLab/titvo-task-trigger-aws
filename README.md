@@ -50,13 +50,13 @@ El servicio está diseñado para funcionar como una Lambda en AWS, expuesta a tr
 │   └── task-trigger     # Lógica de disparadores de tareas
 ├── test                 # Tests unitarios e integración
 ├── trigger              # Implementación del core de la aplicación
-├── localstack           # Configuración para desarrollo local
+├── ministack.hcl        # Root de Terragrunt para desarrollo local
 └── .vscode              # Configuración de VS Code
 ```
 
 ## Desarrollo Local
 
-Para el desarrollo local, se utiliza LocalStack. La configuración se encuentra en el archivo `localstack.hcl`.
+Para el desarrollo local, se utiliza MiniStack. La configuración se encuentra en el archivo `ministack.hcl`.
 
 ## Despliegue
 

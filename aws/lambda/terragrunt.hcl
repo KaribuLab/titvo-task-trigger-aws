@@ -7,10 +7,11 @@ locals {
   function_name = "${local.serverless.locals.service_name}-lambda-${local.serverless.locals.stage}"
   common_tags   = local.serverless.locals.common_tags
   base_path     = "${local.serverless.locals.parameter_path}/${local.serverless.locals.stage}"
+  is_local      = local.serverless.locals.stage == "local"
 }
 
 include {
-  path = find_in_parent_folders()
+  path = find_in_parent_folders(get_env("TG_ROOT_FILE", "root.hcl"))
 }
 
 dependency log {
@@ -123,7 +124,16 @@ inputs = {
       }
     ]
   })
-  environment_variables = {
+  # En el entorno local (MiniStack) el agente corre como contenedor Docker lanzado por el
+  # batch-runner, por lo que la lambda le reenvia estos valores como variables de entorno.
+  environment_variables = merge(local.is_local ? {
+    AWS_ENDPOINT                                = get_env("AWS_ENDPOINT_URL", "http://ministack:4566")
+    TITVO_BATCH_RUNNER_URL                      = get_env("TITVO_BATCH_RUNNER_URL", "http://rag-indexer:3002")
+    TITVO_BITBUCKET_CODE_INSIGHTS_FUNCTION_NAME = dependency.parameters.outputs.parameters["${local.base_path}/infra/lambda/bitbucket-code-insights-name"]
+    TITVO_GITHUB_ISSUE_FUNCTION_NAME            = dependency.parameters.outputs.parameters["${local.base_path}/infra/lambda/github-issue-name"]
+    TITVO_REPORT_FUNCTION_NAME                  = dependency.parameters.outputs.parameters["${local.base_path}/infra/lambda/issue-report-name"]
+    TITVO_RAG_INDEXER_BUCKET                    = dependency.parameters.outputs.parameters["${local.base_path}/infra/s3/rag-index/bucket_name"]
+    } : {}, {
     API_KEY_TABLE_NAME        = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/apikey-table-name"]
     TASK_CLI_FILES_TABLE_NAME = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/cli-files-table-name"]
     TASK_TABLE_NAME           = dependency.parameters.outputs.parameters["${local.base_path}/infra/dynamo/task-table-name"]
@@ -132,7 +142,7 @@ inputs = {
     AWS_STAGE                 = local.serverless.locals.stage
     NODE_OPTIONS              = "--enable-source-maps"
     LOG_LEVEL                 = "debug"
-  }
+  })
   runtime       = "nodejs20.x"
   handler       = "src/entrypoint.handler"
   bucket        = local.serverless.locals.service_bucket

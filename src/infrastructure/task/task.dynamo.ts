@@ -59,7 +59,7 @@ export class DynamoTaskRepository extends TaskRepository {
 }
 
 export function createTaskRepository(options: TaskRepositoryOptions): TaskRepository {
-  const dynamoDBClient = options.awsStage === 'localstack' ? new DynamoDBClient({ endpoint: options.awsEndpoint }) : new DynamoDBClient()
+  const dynamoDBClient = options.awsStage === 'local' ? new DynamoDBClient({ endpoint: options.awsEndpoint }) : new DynamoDBClient()
   const dynamoDBDocumentClient = DynamoDBDocumentClient.from(dynamoDBClient, {
     marshallOptions: {
       removeUndefinedValues: true

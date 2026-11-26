@@ -34,8 +34,8 @@ export class DynamoApiKeyRepository extends ApiKeyRepository {
     try {
       let result
 
-      if (this.awsStage === 'localstack') {
-        // Workaround para bug de LocalStack con GSI queries
+      if (this.awsStage === 'local') {
+        // Workaround para bug de MiniStack con GSI queries
         result = await withRetry(async () => {
           return await this.dynamoDBClient.send(
             new ScanCommand({
@@ -88,8 +88,8 @@ export class DynamoApiKeyRepository extends ApiKeyRepository {
     try {
       let result
 
-      if (this.awsStage === 'localstack') {
-        // Workaround para bug de LocalStack con GSI queries
+      if (this.awsStage === 'local') {
+        // Workaround para bug de MiniStack con GSI queries
         result = await withRetry(async () => {
           return await this.dynamoDBClient.send(
             new ScanCommand({
@@ -135,7 +135,7 @@ export class DynamoApiKeyRepository extends ApiKeyRepository {
 }
 
 export function createApiKeyRepository (options: ApiKeyRepositoryOptions): ApiKeyRepository {
-  const dynamoDBClient = options.awsStage === 'localstack'
+  const dynamoDBClient = options.awsStage === 'local'
     ? new DynamoDBClient({ endpoint: options.awsEndpoint })
     : new DynamoDBClient()
 
